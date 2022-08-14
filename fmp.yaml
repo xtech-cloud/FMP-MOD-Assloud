@@ -1,0 +1,6 @@
+generate:
+  org_name: XTC
+  module_name: Assloud
+  database_driver: mongodb
+  debug: false
+  unity_solution: true

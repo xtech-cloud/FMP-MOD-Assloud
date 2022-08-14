@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MyConfig version="1.0">
+    <!-- UI 
+      visible: 预加载完成后是否显示
+      slot: ui根节点在主Canvas中的挂载路径
+    -->
+    <UI visible="true" slot="[root]"/>
+    <!-- 远程过程调用
+      address: 地址
+    -->
+    <GRPC address="https://localhost:19000"/>
+    <!-- 样式列表
+      name: 名称
+    -->
+    <Styles>
+        <Style name="default"></Style>
+    </Styles>
+    <!-- 预创建的实例列表
+      uid: 实例的唯一ID
+      style: 使用的样式名
+    -->
+    <Instances>
+        <Instance uid="default" style="default">
+            <!-- 预创建的实例列表
+              source: 内容的源的类型
+              uri: 内容的地址
+              delay: 延时打开的时间，单位秒
+            -->
+            <AutoOpen active="false" source="" uri="" delay="0"/>
+        </Instance>
+    </Instances>
+</MyConfig>

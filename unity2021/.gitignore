@@ -1,0 +1,14 @@
+
+/_dist_/
+/Assloud/Assets/TextMesh Pro/
+/Assloud/Assets/TextMesh Pro.meta
+/Assloud/Assets/Plugins/
+/Assloud/Assets/Plugins.meta
+/Assloud/Library/
+/Assloud/obj/
+/Assloud/Logs/
+/Assloud/Temp/
+/Assloud/UserSettings/
+/Assloud/*.sln
+/Assloud/*.csproj
+/Assloud/.vsconfig
