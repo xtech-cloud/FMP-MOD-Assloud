@@ -27,7 +27,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_dto">ContentMatchRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public async Task<Error> OnMatchSubmit(IDTO _dto)
+        public virtual async Task<Error> OnMatchSubmit(IDTO _dto)
         {
             ContentMatchRequestDTO? dto = _dto as ContentMatchRequestDTO;
             if(null == service)

@@ -12,5 +12,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// model.Publish(/XTC/Assloud/MountDisk, data);
         /// </example>
         public const string MountDisk = "/XTC/Assloud/MountDisk";
+
+        public const string OnMountDisk = "/XTC/Assloud/OnMountDisk";
     }
 }

@@ -28,7 +28,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// 更新Match的数据
         /// </summary>
         /// <param name="_response">Match的回复</param>
-        public void UpdateProtoMatch(ContentListResponse _response)
+        public virtual void UpdateProtoMatch(ContentListResponse _response)
         {
             getController()?.UpdateProtoMatch(status_ as ContentModel.ContentStatus, _response);
         }

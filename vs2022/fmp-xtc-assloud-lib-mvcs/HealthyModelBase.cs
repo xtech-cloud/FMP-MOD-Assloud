@@ -28,7 +28,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// 更新Echo的数据
         /// </summary>
         /// <param name="_response">Echo的回复</param>
-        public void UpdateProtoEcho(HealthyEchoResponse _response)
+        public virtual void UpdateProtoEcho(HealthyEchoResponse _response)
         {
             getController()?.UpdateProtoEcho(status_ as HealthyModel.HealthyStatus, _response);
         }

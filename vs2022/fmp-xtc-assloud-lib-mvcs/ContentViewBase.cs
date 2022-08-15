@@ -29,7 +29,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">ContentListResponse的数据传输对象</param>
-        public void RefreshProtoMatch(Error _err, ContentListResponseDTO _dto)
+        public virtual void RefreshProtoMatch(Error _err, ContentListResponseDTO _dto)
         {
             var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
             if (!Error.IsOK(_err))

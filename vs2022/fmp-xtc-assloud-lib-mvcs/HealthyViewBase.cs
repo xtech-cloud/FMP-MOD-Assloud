@@ -29,7 +29,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">HealthyEchoResponse的数据传输对象</param>
-        public void RefreshProtoEcho(Error _err, HealthyEchoResponseDTO _dto)
+        public virtual void RefreshProtoEcho(Error _err, HealthyEchoResponseDTO _dto)
         {
             var bridge = getFacade()?.getUiBridge() as IHealthyUiBridge; 
             if (!Error.IsOK(_err))

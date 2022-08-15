@@ -29,7 +29,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_status">直系状态</param>
         /// <param name="_response">ReadStyleSheet的回复</param>
-        public void UpdateProtoReadStyleSheet(DesignerModel.DesignerStatus? _status, DesignerReadStylesResponse _response)
+        public virtual void UpdateProtoReadStyleSheet(DesignerModel.DesignerStatus? _status, DesignerReadStylesResponse _response)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             DesignerReadStylesResponseDTO? dto = new DesignerReadStylesResponseDTO(_response);
@@ -41,7 +41,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_status">直系状态</param>
         /// <param name="_response">WriteStyle的回复</param>
-        public void UpdateProtoWriteStyle(DesignerModel.DesignerStatus? _status, BlankResponse _response)
+        public virtual void UpdateProtoWriteStyle(DesignerModel.DesignerStatus? _status, BlankResponse _response)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             BlankResponseDTO? dto = new BlankResponseDTO(_response);
@@ -53,7 +53,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_status">直系状态</param>
         /// <param name="_response">ReadInstances的回复</param>
-        public void UpdateProtoReadInstances(DesignerModel.DesignerStatus? _status, DesignerReadInstancesResponse _response)
+        public virtual void UpdateProtoReadInstances(DesignerModel.DesignerStatus? _status, DesignerReadInstancesResponse _response)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             DesignerReadInstancesResponseDTO? dto = new DesignerReadInstancesResponseDTO(_response);
@@ -65,7 +65,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_status">直系状态</param>
         /// <param name="_response">WriteInstances的回复</param>
-        public void UpdateProtoWriteInstances(DesignerModel.DesignerStatus? _status, BlankResponse _response)
+        public virtual void UpdateProtoWriteInstances(DesignerModel.DesignerStatus? _status, BlankResponse _response)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             BlankResponseDTO? dto = new BlankResponseDTO(_response);

@@ -33,18 +33,25 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
         private void handleMountDisk(Model.Status? _status, object _data)
         {
+            string gid = "";
             string dir = "";
             try
             {
                 Dictionary<string, object>? data = _data as Dictionary<string, object>;
                 if (null != data)
+                {
                     dir = (string)data["dir"];
+                    gid = (string)data["gid"];
+                }
             }
             catch (System.Exception ex)
             {
                 getLogger()?.Exception(ex);
                 return;
             }
+
+            if (!gid.Equals(gid_))
+                return;
 
             MockService.logger = getLogger();
             Error err = MockService.MountDisk(dir);
@@ -58,6 +65,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             if (null == service)
                 return;
             service.mock.CallMatchDelegate = MockService.CallMatch;
+            getModel()?.Publish(Subjects.OnMountDisk, _data);
         }
     }
 }

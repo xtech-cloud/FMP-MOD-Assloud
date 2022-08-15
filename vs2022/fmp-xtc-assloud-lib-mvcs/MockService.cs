@@ -19,6 +19,8 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
         public static Error MountDisk(string _dir)
         {
+            logger?.Info("ready to mount disk: {0}", _dir);
+
             if (!Directory.Exists(_dir))
             {
                 return Error.NewAccessErr("{0} not found", _dir);
@@ -72,6 +74,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
         public static async Task<ContentListResponse> CallMatch(ContentMatchRequest _request)
         {
+            logger?.Trace("mock Match ");
             var response = new ContentListResponse();
             response.Status = new Status();
             if (null != contentsMap_)

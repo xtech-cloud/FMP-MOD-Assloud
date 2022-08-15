@@ -42,7 +42,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_request">Match的请求</param>
         /// <returns>错误</returns>
-        public async Task<Error> CallMatch(ContentMatchRequest? _request)
+        public virtual async Task<Error> CallMatch(ContentMatchRequest? _request)
         {
             getLogger()?.Trace("Call Match ...");
             if (null == _request)

@@ -27,7 +27,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_dto">ScopeRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public async Task<Error> OnReadStyleSheetSubmit(IDTO _dto)
+        public virtual async Task<Error> OnReadStyleSheetSubmit(IDTO _dto)
         {
             ScopeRequestDTO? dto = _dto as ScopeRequestDTO;
             if(null == service)
@@ -42,7 +42,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_dto">DesignerWriteStylesRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public async Task<Error> OnWriteStyleSubmit(IDTO _dto)
+        public virtual async Task<Error> OnWriteStyleSubmit(IDTO _dto)
         {
             DesignerWriteStylesRequestDTO? dto = _dto as DesignerWriteStylesRequestDTO;
             if(null == service)
@@ -57,7 +57,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_dto">ScopeRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public async Task<Error> OnReadInstancesSubmit(IDTO _dto)
+        public virtual async Task<Error> OnReadInstancesSubmit(IDTO _dto)
         {
             ScopeRequestDTO? dto = _dto as ScopeRequestDTO;
             if(null == service)
@@ -72,7 +72,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_dto">DesignerWriteInstancesRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public async Task<Error> OnWriteInstancesSubmit(IDTO _dto)
+        public virtual async Task<Error> OnWriteInstancesSubmit(IDTO _dto)
         {
             DesignerWriteInstancesRequestDTO? dto = _dto as DesignerWriteInstancesRequestDTO;
             if(null == service)

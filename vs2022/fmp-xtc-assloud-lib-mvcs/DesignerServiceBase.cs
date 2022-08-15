@@ -42,7 +42,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_request">ReadStyleSheet的请求</param>
         /// <returns>错误</returns>
-        public async Task<Error> CallReadStyleSheet(ScopeRequest? _request)
+        public virtual async Task<Error> CallReadStyleSheet(ScopeRequest? _request)
         {
             getLogger()?.Trace("Call ReadStyleSheet ...");
             if (null == _request)
@@ -75,7 +75,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_request">WriteStyle的请求</param>
         /// <returns>错误</returns>
-        public async Task<Error> CallWriteStyle(DesignerWriteStylesRequest? _request)
+        public virtual async Task<Error> CallWriteStyle(DesignerWriteStylesRequest? _request)
         {
             getLogger()?.Trace("Call WriteStyle ...");
             if (null == _request)
@@ -108,7 +108,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_request">ReadInstances的请求</param>
         /// <returns>错误</returns>
-        public async Task<Error> CallReadInstances(ScopeRequest? _request)
+        public virtual async Task<Error> CallReadInstances(ScopeRequest? _request)
         {
             getLogger()?.Trace("Call ReadInstances ...");
             if (null == _request)
@@ -141,7 +141,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_request">WriteInstances的请求</param>
         /// <returns>错误</returns>
-        public async Task<Error> CallWriteInstances(DesignerWriteInstancesRequest? _request)
+        public virtual async Task<Error> CallWriteInstances(DesignerWriteInstancesRequest? _request)
         {
             getLogger()?.Trace("Call WriteInstances ...");
             if (null == _request)

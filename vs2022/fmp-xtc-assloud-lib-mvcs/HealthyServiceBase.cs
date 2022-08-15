@@ -42,7 +42,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_request">Echo的请求</param>
         /// <returns>错误</returns>
-        public async Task<Error> CallEcho(HealthyEchoRequest? _request)
+        public virtual async Task<Error> CallEcho(HealthyEchoRequest? _request)
         {
             getLogger()?.Trace("Call Echo ...");
             if (null == _request)

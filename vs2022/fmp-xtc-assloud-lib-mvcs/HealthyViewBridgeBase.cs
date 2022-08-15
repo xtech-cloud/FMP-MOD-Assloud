@@ -27,7 +27,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_dto">HealthyEchoRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public async Task<Error> OnEchoSubmit(IDTO _dto)
+        public virtual async Task<Error> OnEchoSubmit(IDTO _dto)
         {
             HealthyEchoRequestDTO? dto = _dto as HealthyEchoRequestDTO;
             if(null == service)

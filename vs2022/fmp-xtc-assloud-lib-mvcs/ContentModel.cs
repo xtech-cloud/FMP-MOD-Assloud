@@ -1,5 +1,7 @@
 
+using System.Collections.Generic;
 using XTC.FMP.LIB.MVCS;
+using XTC.FMP.MOD.Assloud.LIB.Proto;
 
 namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 {
@@ -18,6 +20,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         public class ContentStatus : Model.Status
         {
+            public Dictionary<string, ContentEntity>? contentMap { get; set; } = null;
         }
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// <param name="_gid">直系的组的ID</param>
         public ContentModel(string _uid, string _gid) : base(_uid, _gid) 
         {
-        }
+        } 
 
         protected override void preSetup()
         {

@@ -34,6 +34,7 @@
         <Subjects>
             <Subject message="/XTC/Assloud/MountDisk">
                 <Parameters>
+                    <Parameter key="gid" value="default" type="string"/>
                     <Parameter key="dir" value="D:/github/fmp/fmp-mod-assloud/unity2021/vendor/assloud" type="string"/>
                 </Parameters>
             </Subject>

@@ -29,7 +29,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">DesignerReadStylesResponse的数据传输对象</param>
-        public void RefreshProtoReadStyleSheet(Error _err, DesignerReadStylesResponseDTO _dto)
+        public virtual void RefreshProtoReadStyleSheet(Error _err, DesignerReadStylesResponseDTO _dto)
         {
             var bridge = getFacade()?.getUiBridge() as IDesignerUiBridge; 
             if (!Error.IsOK(_err))
@@ -45,7 +45,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">BlankResponse的数据传输对象</param>
-        public void RefreshProtoWriteStyle(Error _err, BlankResponseDTO _dto)
+        public virtual void RefreshProtoWriteStyle(Error _err, BlankResponseDTO _dto)
         {
             var bridge = getFacade()?.getUiBridge() as IDesignerUiBridge; 
             if (!Error.IsOK(_err))
@@ -61,7 +61,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">DesignerReadInstancesResponse的数据传输对象</param>
-        public void RefreshProtoReadInstances(Error _err, DesignerReadInstancesResponseDTO _dto)
+        public virtual void RefreshProtoReadInstances(Error _err, DesignerReadInstancesResponseDTO _dto)
         {
             var bridge = getFacade()?.getUiBridge() as IDesignerUiBridge; 
             if (!Error.IsOK(_err))
@@ -77,7 +77,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">BlankResponse的数据传输对象</param>
-        public void RefreshProtoWriteInstances(Error _err, BlankResponseDTO _dto)
+        public virtual void RefreshProtoWriteInstances(Error _err, BlankResponseDTO _dto)
         {
             var bridge = getFacade()?.getUiBridge() as IDesignerUiBridge; 
             if (!Error.IsOK(_err))

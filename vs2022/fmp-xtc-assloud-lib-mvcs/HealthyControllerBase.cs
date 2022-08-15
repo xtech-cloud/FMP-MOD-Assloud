@@ -29,7 +29,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_status">直系状态</param>
         /// <param name="_response">Echo的回复</param>
-        public void UpdateProtoEcho(HealthyModel.HealthyStatus? _status, HealthyEchoResponse _response)
+        public virtual void UpdateProtoEcho(HealthyModel.HealthyStatus? _status, HealthyEchoResponse _response)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             HealthyEchoResponseDTO? dto = new HealthyEchoResponseDTO(_response);

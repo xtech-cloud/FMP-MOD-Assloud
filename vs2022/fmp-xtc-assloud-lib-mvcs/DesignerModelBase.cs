@@ -28,7 +28,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// 更新ReadStyleSheet的数据
         /// </summary>
         /// <param name="_response">ReadStyleSheet的回复</param>
-        public void UpdateProtoReadStyleSheet(DesignerReadStylesResponse _response)
+        public virtual void UpdateProtoReadStyleSheet(DesignerReadStylesResponse _response)
         {
             getController()?.UpdateProtoReadStyleSheet(status_ as DesignerModel.DesignerStatus, _response);
         }
@@ -37,7 +37,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// 更新WriteStyle的数据
         /// </summary>
         /// <param name="_response">WriteStyle的回复</param>
-        public void UpdateProtoWriteStyle(BlankResponse _response)
+        public virtual void UpdateProtoWriteStyle(BlankResponse _response)
         {
             getController()?.UpdateProtoWriteStyle(status_ as DesignerModel.DesignerStatus, _response);
         }
@@ -46,7 +46,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// 更新ReadInstances的数据
         /// </summary>
         /// <param name="_response">ReadInstances的回复</param>
-        public void UpdateProtoReadInstances(DesignerReadInstancesResponse _response)
+        public virtual void UpdateProtoReadInstances(DesignerReadInstancesResponse _response)
         {
             getController()?.UpdateProtoReadInstances(status_ as DesignerModel.DesignerStatus, _response);
         }
@@ -55,7 +55,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// 更新WriteInstances的数据
         /// </summary>
         /// <param name="_response">WriteInstances的回复</param>
-        public void UpdateProtoWriteInstances(BlankResponse _response)
+        public virtual void UpdateProtoWriteInstances(BlankResponse _response)
         {
             getController()?.UpdateProtoWriteInstances(status_ as DesignerModel.DesignerStatus, _response);
         }

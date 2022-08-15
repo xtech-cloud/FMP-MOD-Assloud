@@ -29,7 +29,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_status">直系状态</param>
         /// <param name="_response">Match的回复</param>
-        public void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response)
+        public virtual void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             ContentListResponseDTO? dto = new ContentListResponseDTO(_response);

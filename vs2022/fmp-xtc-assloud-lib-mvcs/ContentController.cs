@@ -1,4 +1,7 @@
 
+using System.Collections.Generic;
+using XTC.FMP.MOD.Assloud.LIB.Proto;
+
 namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 {
     /// <summary>
@@ -16,8 +19,23 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         /// <param name="_uid">实例化后的唯一识别码</param>
         /// <param name="_gid">直系的组的ID</param>
-        public ContentController(string _uid, string _gid) : base(_uid, _gid) 
+        public ContentController(string _uid, string _gid) : base(_uid, _gid)
         {
+        }
+
+        public override void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response)
+        {
+            if (null != _status)
+            {
+                _status.contentMap = new Dictionary<string, ContentEntity>();
+
+                foreach (ContentEntity entity in _response.Contents)
+                {
+                    _status.contentMap[entity.Meta.Uri] = entity;
+                }
+            }
+
+            base.UpdateProtoMatch(_status, _response);
         }
     }
 }
