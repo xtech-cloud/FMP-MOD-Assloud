@@ -18,7 +18,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// <param name="_id">id</param>
         /// <param name="_logger">日志</param>
         /// <returns>错误</returns>
-        public Error StaticRegister(string _id, Logger? _logger)
+        public virtual Error StaticRegister(string _id, Logger? _logger)
         {
             return base.staticRegister(_id, _logger);
         }
@@ -32,7 +32,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// <param name="_id">id</param>
         /// <param name="_logger">日志</param>
         /// <returns>错误</returns>
-        public Error DynamicRegister(string _id, Logger _logger)
+        public virtual Error DynamicRegister(string _id, Logger _logger)
         {
             return base.dynamicRegister(_id, _logger);
         }
@@ -46,7 +46,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// <param name="_id">id</param>
         /// <param name="_logger">日志</param>
         /// <returns>错误</returns>
-        public Error StaticCancel(string _id, Logger _logger)
+        public virtual Error StaticCancel(string _id, Logger _logger)
         {
             return base.staticCancel(_id, _logger);
         }
@@ -60,7 +60,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// <param name="_id">id</param>
         /// <param name="_logger">日志</param>
         /// <returns>错误</returns>
-        public Error DynamicCancel(string _id, Logger _logger)
+        public virtual Error DynamicCancel(string _id, Logger _logger)
         {
             return base.dynamicCancel(_id, _logger);
         }

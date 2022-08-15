@@ -13,20 +13,30 @@
       name: 名称
     -->
     <Styles>
-        <Style name="default"></Style>
+        <Style name="default">
+        </Style>
     </Styles>
     <!-- 预创建的实例列表
       uid: 实例的唯一ID
       style: 使用的样式名
     -->
     <Instances>
-        <Instance uid="default" style="default">
-            <!-- 预创建的实例列表
-              source: 内容的源的类型
-              uri: 内容的地址
-              delay: 延时打开的时间，单位秒
-            -->
-            <AutoOpen active="false" source="" uri="" delay="0"/>
-        </Instance>
+        <Instance uid="default" style="default"/>
     </Instances>
+    <!-- 预加载 -->
+    <Preload>
+        <!-- 消息订阅的主题
+          message: 消息
+          Parameter.key: 参数的键
+          Parameter.value: 参数的值
+          Parameter.type: 参数的类型，支持的类型为string,int,float,bool
+        -->
+        <Subjects>
+            <Subject message="/XTC/Assloud/MountDisk">
+                <Parameters>
+                    <Parameter key="dir" value="D:/github/fmp/fmp-mod-assloud/unity2021/vendor/assloud" type="string"/>
+                </Parameters>
+            </Subject>
+        </Subjects>
+    </Preload>
 </MyConfig>

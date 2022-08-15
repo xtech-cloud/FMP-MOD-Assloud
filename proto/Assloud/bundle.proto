@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "shared.proto";
+
+option csharp_namespace = "XTC.FMP.MOD.Assloud.LIB.Proto";
+package xtc.fmp.assloud;
+
+// 包
+service Bundle
+{
+}
+

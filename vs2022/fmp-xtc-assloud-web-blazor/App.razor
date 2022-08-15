@@ -5,7 +5,7 @@
 *************************************************************************************
 -->
 
-<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(XTC.FMP.MOD.Assloud.LIB.Razor.DesignerComponent).Assembly,typeof(XTC.FMP.MOD.Assloud.LIB.Razor.HealthyComponent).Assembly, }">
+<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(XTC.FMP.MOD.Assloud.LIB.Razor.ContentComponent).Assembly,typeof(XTC.FMP.MOD.Assloud.LIB.Razor.DesignerComponent).Assembly,typeof(XTC.FMP.MOD.Assloud.LIB.Razor.HealthyComponent).Assembly, }">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(BasicLayout)" />
     </Found>

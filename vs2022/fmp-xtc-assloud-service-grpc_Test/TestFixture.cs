@@ -17,6 +17,12 @@ public class TestFixture : TestFixtureBase
     }
 
 
+    protected override void newContentService()
+    {
+        throw new NotImplementedException();
+        //serviceContent_ = new ContentService(new ContentDAO(new DatabaseOptions()));
+    }
+
     protected override void newDesignerService()
     {
         throw new NotImplementedException();

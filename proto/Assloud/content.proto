@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "shared.proto";
+
+option csharp_namespace = "XTC.FMP.MOD.Assloud.LIB.Proto";
+package xtc.fmp.assloud;
+
+// 内容
+service Content
+{
+    // 匹配
+    rpc Match(ContentMatchRequest) returns (ContentListResponse) { }
+}
+
+// 匹配包的请求
+message ContentMatchRequest
+{
+    repeated string patterns = 1; //  匹配模式列表
+}
+
+// 内容列表的回复
+message ContentListResponse 
+{
+    Status status = 1;  // 状态
+    int64 total = 2;  // 总数
+    repeated ContentEntity contents = 3;   // 内容的数组
+}

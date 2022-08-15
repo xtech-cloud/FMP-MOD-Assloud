@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace XTC.FMP.MOD.Assloud.LIB.Unity
@@ -9,7 +10,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
     /// <remarks>
     /// 不参与模块编译，仅用于在编辑器中开发调试
     /// </remarks>
-    public class DebugEntry : MyEntry 
+    public class DebugEntry : MyEntry
     {
         /// <summary>
         /// 调试预加载
@@ -17,6 +18,10 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         public void __DebugPreload(GameObject _exportRoot)
         {
             processRoot(_exportRoot);
+            createInstances(() =>
+            {
+                publishPreloadSubjects();
+            });
         }
 
         /// <summary>
@@ -26,7 +31,10 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_style">实例的样式名</param>
         public void __DebugCreate(string _uid, string _style)
         {
-            runtime_.CreateInstance(_uid, _style);
+            var data = new Dictionary<string, object>();
+            data["uid"] = _uid;
+            data["style"] = _style;
+            modelDummy_.Publish(MySubjectBase.Create, data);
         }
 
         /// <summary>
@@ -38,7 +46,12 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_delay">延迟时间，单位秒</param>
         public void __DebugOpen(string _uid, string _source, string _uri, float _delay)
         {
-            runtime_.OpenInstance(_uid, _source, _uri, _delay);
+            var data = new Dictionary<string, object>();
+            data["uid"] = _uid;
+            data["source"] = _source;
+            data["uri"] = _uri;
+            data["delay"] = _delay;
+            modelDummy_.Publish(MySubjectBase.Open, data);
         }
 
         /// <summary>
@@ -48,7 +61,10 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_delay">延迟时间，单位秒</param>
         public void __DebugClose(string _uid, float _delay)
         {
-            runtime_.CloseInstance(_uid, _delay);
+            var data = new Dictionary<string, object>();
+            data["uid"] = _uid;
+            data["delay"] = _delay;
+            modelDummy_.Publish(MySubjectBase.Close, data);
         }
 
         /// <summary>
@@ -57,7 +73,9 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_uid">实例的uid</param>
         public void __DebugDelete(string _uid)
         {
-            runtime_.DeleteInstance(_uid);
+            var data = new Dictionary<string, object>();
+            data["uid"] = _uid;
+            modelDummy_.Publish(MySubjectBase.Delete, data);
         }
     }
 }

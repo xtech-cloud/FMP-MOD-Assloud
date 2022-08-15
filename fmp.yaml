@@ -1,4 +1,5 @@
 generate:
+  active: true
   org_name: XTC
   module_name: Assloud
   database_driver: mongodb

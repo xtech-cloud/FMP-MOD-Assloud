@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "fmp-xtc-assloud-service-grpc": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59812;http://localhost:59813"
+    }
+  }
+}

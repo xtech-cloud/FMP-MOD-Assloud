@@ -2,6 +2,7 @@
 using UnityEngine;
 using LibMVCS = XTC.FMP.LIB.MVCS;
 using XTC.FMP.MOD.Assloud.LIB.MVCS;
+using XTC.FMP.LIB.MVCS;
 
 namespace XTC.FMP.MOD.Assloud.LIB.Unity
 {
@@ -10,6 +11,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
     /// </summary>
     public class MyEntry : MyEntryBase
     {
+      
     }
 }
 

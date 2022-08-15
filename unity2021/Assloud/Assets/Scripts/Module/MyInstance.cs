@@ -44,6 +44,8 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         public void HandleOpened()
         {
             rootUI.gameObject.SetActive(true);
+            var req = new ContentMatchRequest();
+            submitContentMatch(req);
         }
 
         /// <summary>

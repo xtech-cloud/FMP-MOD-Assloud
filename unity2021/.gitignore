@@ -1,5 +1,6 @@
 
 /_dist_/
+/_build_/
 /Assloud/Assets/TextMesh Pro/
 /Assloud/Assets/TextMesh Pro.meta
 /Assloud/Assets/Plugins/
@@ -12,3 +13,4 @@
 /Assloud/*.sln
 /Assloud/*.csproj
 /Assloud/.vsconfig
+/.UNITY_HOME.env
