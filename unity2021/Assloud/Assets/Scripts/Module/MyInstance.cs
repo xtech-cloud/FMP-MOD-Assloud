@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using LibMVCS = XTC.FMP.LIB.MVCS;
 using XTC.FMP.MOD.Assloud.LIB.Proto;
 using XTC.FMP.MOD.Assloud.LIB.MVCS;
+using XTC.FMP.LIB.MVCS;
+using System.Collections.Generic;
 
 namespace XTC.FMP.MOD.Assloud.LIB.Unity
 {
@@ -13,15 +15,17 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
     /// </summary>
     public class MyInstance : MyInstanceBase
     {
-        private MyConfig.Style style_ { get; set; }
+        public MyInstance(string _uid, string _style, MyConfig _config, LibMVCS.Logger _logger, Dictionary<string, Any> _settings, MyEntryBase _entry) 
+            : base(_uid, _style, _config, _logger, _settings, _entry)
+        {
+        }
 
         /// <summary>
         /// 应用样式
         /// </summary>
         /// <param name="_style">样式</param>
-        public void ApplyStyle(MyConfig.Style _style)
+        public void ApplyStyle()
         {
-            style_ = _style;
         }
 
         /// <summary>

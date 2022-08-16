@@ -11,15 +11,33 @@ using System.Net;
 
 namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 {
-    internal static class MockService
+    public class MockService
     {
-        public static Logger? logger { get; set; }
+        public static MockService Instance
+        {
+            get
+            {
+                if (null == instance_)
+                    instance_ = new MockService();
+                return instance_;
+            }
+        }
 
-        private static Dictionary<string, ContentEntity>? contentsMap_ { get; set; }
+        public Logger? logger { get; set; }
 
-        public static Error MountDisk(string _dir)
+        private Dictionary<string, ContentEntity>? contentsMap_ { get; set; }
+
+        private List<string> mounted_ = new List<string>();
+
+        private static MockService? instance_ { get; set; } = null;
+
+        public Error MountDisk(string _dir)
         {
             logger?.Info("ready to mount disk: {0}", _dir);
+            if(mounted_.Contains(_dir))
+            {
+                return Error.OK;
+            }
 
             if (!Directory.Exists(_dir))
             {
@@ -27,7 +45,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             }
 
             var dotAssloud = Path.Combine(_dir, ".assloud");
-            if (File.Exists(dotAssloud))
+            if (!File.Exists(dotAssloud))
             {
                 return Error.NewAccessErr("{0} not found", dotAssloud);
             }
@@ -69,10 +87,12 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                     }
                 }
             }
+            mounted_.Add(_dir);
+            logger?.Info("found {0} contents", contentsMap_.Count);
             return Error.OK;
         }
 
-        public static async Task<ContentListResponse> CallMatch(ContentMatchRequest _request)
+        public async Task<ContentListResponse> CallMatch(ContentMatchRequest _request)
         {
             logger?.Trace("mock Match ");
             var response = new ContentListResponse();

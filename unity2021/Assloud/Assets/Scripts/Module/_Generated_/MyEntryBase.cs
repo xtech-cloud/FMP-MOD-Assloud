@@ -72,12 +72,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
                 _options.setChannel(channel);
             }
 
-            runtime_ = new MyRuntime();
-            runtime_.settings = settings_;
-            runtime_.entry = this;
-            runtime_.logger = _logger;
-            runtime_.config = config_;
-            runtime_.mono = mono_;
+            runtime_ = new MyRuntime(mono_, config_, settings_, logger_, this);
         }
 
         /// <summary>

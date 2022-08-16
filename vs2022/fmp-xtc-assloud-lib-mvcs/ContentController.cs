@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Threading;
 using XTC.FMP.MOD.Assloud.LIB.Proto;
 
 namespace XTC.FMP.MOD.Assloud.LIB.MVCS
@@ -23,7 +24,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         {
         }
 
-        public override void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response)
+        public override void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response, SynchronizationContext? _context)
         {
             if (null != _status)
             {
@@ -35,7 +36,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                 }
             }
 
-            base.UpdateProtoMatch(_status, _response);
+            base.UpdateProtoMatch(_status, _response, _context);
         }
     }
 }

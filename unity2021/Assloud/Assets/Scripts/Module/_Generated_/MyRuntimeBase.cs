@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LibMVCS = XTC.FMP.LIB.MVCS;
-using XTC.FMP.MOD.Assloud.LIB.Bridge;
 
 namespace XTC.FMP.MOD.Assloud.LIB.Unity
 {
@@ -19,12 +18,6 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
     ///</remarks>
     public abstract class MyRuntimeBase
     {
-        public MonoBehaviour mono { get; set; }
-        public MyConfig config { get; set; }
-        public Dictionary<string, LibMVCS.Any> settings { get; set; }
-        public LibMVCS.Logger logger { get; set; }
-        public MyEntryBase entry { get; set; }
-
         /// <summary>
         /// ui的根对象
         /// </summary>
@@ -39,6 +32,21 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// 实例表，键为实例的uid
         /// </summary>
         public Dictionary<string, MyInstance> instances { get; private set; } = new Dictionary<string, MyInstance>();
+
+        protected MonoBehaviour mono_ { get; set; }
+        protected MyConfig config_ { get; set; }
+        protected Dictionary<string, LibMVCS.Any> settings_ { get; set; }
+        protected LibMVCS.Logger logger_ { get; set; }
+        protected MyEntryBase entry_ { get; set; }
+
+        public MyRuntimeBase(MonoBehaviour _mono, MyConfig _config, Dictionary<string, LibMVCS.Any> _settings, LibMVCS.Logger _logger, MyEntryBase _entry)
+        {
+            mono_ = _mono;
+            config_ = _config;
+            settings_= _settings;
+            logger_ = _logger;
+            entry_ = _entry; 
+        }
 
         /// <summary>
         /// 处理从UAB中实例化的根对象
@@ -58,14 +66,14 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
             RectTransform rt = root.GetComponent<RectTransform>();
             rt.sizeDelta = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
-            root.gameObject.SetActive(config.ui.visible);
+            root.gameObject.SetActive(config_.ui.visible);
             // 销毁根对象
             GameObject.Destroy(_root);
             // 查找实例的对象
             var rInstance = rootUI.transform.Find("instance");
             if (null == rInstance)
             {
-                logger.Error("{0}/instance is required!", _root.name);
+                logger_.Error("{0}/instance is required!", _root.name);
                 return;
             }
             instanceUI = rInstance.gameObject;
@@ -82,7 +90,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <returns></returns>
         public virtual void CreateInstanceAsync(string _uid, string _style, System.Action<MyInstance> _onFinish)
         {
-            mono.StartCoroutine(createInstanceAsync(_uid, _style, _onFinish));
+            mono_.StartCoroutine(createInstanceAsync(_uid, _style, _onFinish));
         }
 
         /// <summary>
@@ -91,7 +99,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_uid">实例的uid</param>
         public virtual void DeleteInstanceAsync(string _uid)
         {
-            mono.StartCoroutine(deleteInstanceAsync(_uid));
+            mono_.StartCoroutine(deleteInstanceAsync(_uid));
         }
 
 
@@ -104,7 +112,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_delay">延时时间，单位秒</param>
         public virtual void OpenInstanceAsync(string _uid, string _source, string _uri, float _delay)
         {
-            mono.StartCoroutine(openInstanceAsync(_uid, _source, _uri, _delay));
+            mono_.StartCoroutine(openInstanceAsync(_uid, _source, _uri, _delay));
         }
 
         /// <summary>
@@ -114,7 +122,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_delay">延时时间，单位秒</param>
         public virtual void CloseInstanceAsync(string _uid, float _delay)
         {
-            mono.StartCoroutine(closeInstanceAsync(_uid, _delay));
+            mono_.StartCoroutine(closeInstanceAsync(_uid, _delay));
         }
 
         protected IEnumerator delayDo(float _time, System.Action _action)
@@ -128,68 +136,38 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
 
         private IEnumerator createInstanceAsync(string _uid, string _style, System.Action<MyInstance> _onFinish)
         {
-            logger.Debug("create instance of {0}, uid is {1}, style is {2}", MyEntryBase.ModuleName, _uid, _style);
+            logger_.Debug("create instance of {0}, uid is {1}, style is {2}", MyEntryBase.ModuleName, _uid, _style);
             // 延时一帧执行，在发布消息时不能动态注册
             yield return new WaitForEndOfFrame();
 
             MyInstance instance;
             if (instances.TryGetValue(_uid, out instance))
             {
-                logger.Error("instance is exists");
+                logger_.Error("instance is exists");
                 yield break;
             }
 
-            instance = new MyInstance();
+            instance = new MyInstance(_uid, _style, config_, logger_, settings_, entry_);
             instances[_uid] = instance;
-
-            instance.rootUI = UnityEngine.GameObject.Instantiate(instanceUI, instanceUI.transform.parent);
-            instance.rootUI.name = _uid;
-            instance.logger = logger;
-            instance.config = config;
-            instance.settings = settings;
-
-            MyConfig.Style style = null;
-            foreach (var s in config.styles)
-            {
-                if (s.name.Equals(_style))
-                    style = s;
-            }
-            instance.ApplyStyle(style);
+            instance.InstantiateUI(instanceUI);
+            instance.ApplyStyle();
             instance.HandleCreated();
             // 动态注册直系的MVCS
-            entry.DynamicRegister(_uid, logger);
-
-            var facadeContent = entry.getDynamicContentFacade(_uid);
-            var bridgeContent = new ContentUiBridge();
-            bridgeContent.logger = logger;
-            facadeContent.setUiBridge(bridgeContent);
-            instance.viewBridgeContent = facadeContent.getViewBridge() as IContentViewBridge;
-
-            var facadeDesigner = entry.getDynamicDesignerFacade(_uid);
-            var bridgeDesigner = new DesignerUiBridge();
-            bridgeDesigner.logger = logger;
-            facadeDesigner.setUiBridge(bridgeDesigner);
-            instance.viewBridgeDesigner = facadeDesigner.getViewBridge() as IDesignerViewBridge;
-
-            var facadeHealthy = entry.getDynamicHealthyFacade(_uid);
-            var bridgeHealthy = new HealthyUiBridge();
-            bridgeHealthy.logger = logger;
-            facadeHealthy.setUiBridge(bridgeHealthy);
-            instance.viewBridgeHealthy = facadeHealthy.getViewBridge() as IHealthyViewBridge;
-
+            entry_.DynamicRegister(_uid, logger_);
+            instance.SetupBridges();
             _onFinish(instance);
         }
 
         private IEnumerator deleteInstanceAsync(string _uid)
         {
-            logger.Debug("delete instance of {0}, uid is {1}", MyEntryBase.ModuleName, _uid);
+            logger_.Debug("delete instance of {0}, uid is {1}", MyEntryBase.ModuleName, _uid);
             // 延时一帧执行，在发布消息时不能动态注销
             yield return new WaitForEndOfFrame();
 
             MyInstance instance;
             if (!instances.TryGetValue(_uid, out instance))
             {
-                logger.Error("instance not found");
+                logger_.Error("instance not found");
                 yield break;
             }
 
@@ -198,17 +176,17 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
             instances.Remove(_uid);
 
             // 动态注销直系的MVCS
-            entry.DynamicCancel(_uid, logger);
+            entry_.DynamicCancel(_uid, logger_);
         }
 
         private IEnumerator openInstanceAsync(string _uid, string _source, string _uri, float _delay)
         {
-            logger.Debug("open instance of {0}, uid is {1}", MyEntryBase.ModuleName, _uid);
+            logger_.Debug("open instance of {0}, uid is {1}", MyEntryBase.ModuleName, _uid);
 
             MyInstance instance;
             if (!instances.TryGetValue(_uid, out instance))
             {
-                logger.Error("instance not found");
+                logger_.Error("instance not found");
                 yield break;
             }
             yield return new WaitForSeconds(_delay);
@@ -217,11 +195,11 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
 
         private IEnumerator closeInstanceAsync(string _uid, float _delay)
         {
-            logger.Debug("close instance of {0}, uid is {1}", MyEntryBase.ModuleName, _uid);
+            logger_.Debug("close instance of {0}, uid is {1}", MyEntryBase.ModuleName, _uid);
             MyInstance instance;
             if (!instances.TryGetValue(_uid, out instance))
             {
-                logger.Error("instance not found");
+                logger_.Error("instance not found");
                 yield break;
             }
             yield return new WaitForSeconds(_delay);

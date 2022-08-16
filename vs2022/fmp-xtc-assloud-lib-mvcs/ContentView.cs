@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using XTC.FMP.LIB.MVCS;
 using System.Threading.Tasks;
 using XTC.FMP.MOD.Assloud.LIB.Bridge;
+using System.Threading;
 
 namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 {
@@ -53,18 +54,19 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             if (!gid.Equals(gid_))
                 return;
 
-            MockService.logger = getLogger();
-            Error err = MockService.MountDisk(dir);
+            SynchronizationContext context = SynchronizationContext.Current;
+            MockService.Instance.logger = getLogger();
+            Error err = MockService.Instance.MountDisk(dir);
             if (!Error.IsOK(err))
             {
                 var bridge = getFacade()?.getUiBridge() as IContentUiBridge;
-                bridge?.Alert(err.getCode().ToString(), err.getMessage());
+                bridge?.Alert(err.getCode().ToString(), err.getMessage(), context);
             }
             // 挂在本地磁盘数据口，网络服务使用mock形式
             var service = getService();
             if (null == service)
                 return;
-            service.mock.CallMatchDelegate = MockService.CallMatch;
+            service.mock.CallMatchDelegate = MockService.Instance.CallMatch;
             getModel()?.Publish(Subjects.OnMountDisk, _data);
         }
     }

@@ -4,6 +4,7 @@
 //*************************************************************************************
 
 using System;
+using System.Threading;
 using LibMVCS = XTC.FMP.LIB.MVCS;
 using XTC.FMP.MOD.Assloud.LIB.Bridge;
 
@@ -14,28 +15,28 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
     {
         public LibMVCS.Logger logger { get; set; }
 
-        public virtual void Alert(string _code, string _message)
+        public virtual void Alert(string _code, string _message, SynchronizationContext _context)
         {
             throw new NotImplementedException();
         }
 
 
-        public virtual void RefreshReadStyleSheet(IDTO _dto)
+        public virtual void RefreshReadStyleSheet(IDTO _dto, SynchronizationContext _context)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void RefreshWriteStyle(IDTO _dto)
+        public virtual void RefreshWriteStyle(IDTO _dto, SynchronizationContext _context)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void RefreshReadInstances(IDTO _dto)
+        public virtual void RefreshReadInstances(IDTO _dto, SynchronizationContext _context)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void RefreshWriteInstances(IDTO _dto)
+        public virtual void RefreshWriteInstances(IDTO _dto, SynchronizationContext _context)
         {
             throw new NotImplementedException();
         }

@@ -13,12 +13,12 @@ public class IntegrationTest : IntegrationTestBase
 
     public class ContentUiBridge : IContentUiBridge
     {
-        public virtual void Alert(string _code, string _message)
+        public void Alert(string _code, string _message, SynchronizationContext? _context)
         {
             throw new Exception(_message);
         }
 
-        public virtual void RefreshMatch(IDTO _dto)
+        public void RefreshMatch(IDTO _dto, SynchronizationContext? _context)
         {
             var dto = _dto as ContentListResponseDTO;
             Assert.NotEmpty(dto?.Value.Contents);
@@ -40,14 +40,16 @@ public class IntegrationTest : IntegrationTestBase
             string dir = "../../../../../unity2021/vendor/assloud";
             dir = Path.GetFullPath(dir);
             data["dir"] = dir;
+            data["gid"] = "test";
             fixture_.model.Publish(Subjects.MountDisk, data);
         }
 
         {
+            SynchronizationContext? context = SynchronizationContext.Current;
             var req = new ContentMatchRequest();
             req.Patterns.Add("tech.meex.∞Ò—˘»ÀŒÔ/+");
             var dto = new ContentMatchRequestDTO(req);
-            await bridgeContent.OnMatchSubmit(dto);
+            await bridgeContent.OnMatchSubmit(dto, context);
         }
     }
 }

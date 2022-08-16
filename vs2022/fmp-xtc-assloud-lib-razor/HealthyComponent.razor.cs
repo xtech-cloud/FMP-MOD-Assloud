@@ -17,7 +17,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 razor_ = _razor;
             }
 
-            public void Alert(string _code, string _message)
+            public void Alert(string _code, string _message, SynchronizationContext? _context)
             {
                 if (null == razor_.messageService_)
                     return;
@@ -28,7 +28,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
 
 
-            public void RefreshEcho(IDTO _dto)
+            public void RefreshEcho(IDTO _dto, SynchronizationContext? _context)
             {
                 var dto = _dto as HealthyEchoResponseDTO;
                 razor_.__debugEcho = dto?.Value.ToString();
@@ -55,7 +55,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             var reqEcho = new HealthyEchoRequest();
             var dtoEcho = new HealthyEchoRequestDTO(reqEcho);
             logger_?.Trace("invoke OnEchoSubmit");
-            await bridge.OnEchoSubmit(dtoEcho);
+            await bridge.OnEchoSubmit(dtoEcho, null);
 
         }
 

@@ -17,7 +17,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 razor_ = _razor;
             }
 
-            public void Alert(string _code, string _message)
+            public void Alert(string _code, string _message, SynchronizationContext? _context)
             {
                 if (null == razor_.messageService_)
                     return;
@@ -28,25 +28,25 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
 
 
-            public void RefreshReadStyleSheet(IDTO _dto)
+            public void RefreshReadStyleSheet(IDTO _dto, SynchronizationContext? _context)
             {
                 var dto = _dto as DesignerReadStylesResponseDTO;
                 razor_.__debugReadStyleSheet = dto?.Value.ToString();
             }
 
-            public void RefreshWriteStyle(IDTO _dto)
+            public void RefreshWriteStyle(IDTO _dto, SynchronizationContext? _context)
             {
                 var dto = _dto as BlankResponseDTO;
                 razor_.__debugWriteStyle = dto?.Value.ToString();
             }
 
-            public void RefreshReadInstances(IDTO _dto)
+            public void RefreshReadInstances(IDTO _dto, SynchronizationContext? _context)
             {
                 var dto = _dto as DesignerReadInstancesResponseDTO;
                 razor_.__debugReadInstances = dto?.Value.ToString();
             }
 
-            public void RefreshWriteInstances(IDTO _dto)
+            public void RefreshWriteInstances(IDTO _dto, SynchronizationContext? _context)
             {
                 var dto = _dto as BlankResponseDTO;
                 razor_.__debugWriteInstances = dto?.Value.ToString();
@@ -73,22 +73,22 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             var reqReadStyleSheet = new ScopeRequest();
             var dtoReadStyleSheet = new ScopeRequestDTO(reqReadStyleSheet);
             logger_?.Trace("invoke OnReadStyleSheetSubmit");
-            await bridge.OnReadStyleSheetSubmit(dtoReadStyleSheet);
+            await bridge.OnReadStyleSheetSubmit(dtoReadStyleSheet, null);
 
             var reqWriteStyle = new DesignerWriteStylesRequest();
             var dtoWriteStyle = new DesignerWriteStylesRequestDTO(reqWriteStyle);
             logger_?.Trace("invoke OnWriteStyleSubmit");
-            await bridge.OnWriteStyleSubmit(dtoWriteStyle);
+            await bridge.OnWriteStyleSubmit(dtoWriteStyle, null);
 
             var reqReadInstances = new ScopeRequest();
             var dtoReadInstances = new ScopeRequestDTO(reqReadInstances);
             logger_?.Trace("invoke OnReadInstancesSubmit");
-            await bridge.OnReadInstancesSubmit(dtoReadInstances);
+            await bridge.OnReadInstancesSubmit(dtoReadInstances, null);
 
             var reqWriteInstances = new DesignerWriteInstancesRequest();
             var dtoWriteInstances = new DesignerWriteInstancesRequestDTO(reqWriteInstances);
             logger_?.Trace("invoke OnWriteInstancesSubmit");
-            await bridge.OnWriteInstancesSubmit(dtoWriteInstances);
+            await bridge.OnWriteInstancesSubmit(dtoWriteInstances, null);
 
         }
 

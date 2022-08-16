@@ -36,7 +36,7 @@ public class TestServerCallContext : ServerCallContext
     protected override WriteOptions? WriteOptionsCore { get => _writeOptions; set { _writeOptions = value; } }
     protected override AuthContext AuthContextCore => _authContext;
 
-    protected override ContextPropagationToken CreatePropagationTokenCore(ContextPropagationOptions options)
+    protected override ContextPropagationToken CreatePropagationTokenCore(ContextPropagationOptions? options)
     {
         throw new NotImplementedException();
     }

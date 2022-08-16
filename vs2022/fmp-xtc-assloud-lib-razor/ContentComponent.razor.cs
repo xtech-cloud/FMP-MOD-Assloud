@@ -17,7 +17,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 razor_ = _razor;
             }
 
-            public void Alert(string _code, string _message)
+            public void Alert(string _code, string _message, SynchronizationContext? _context)
             {
                 if (null == razor_.messageService_)
                     return;
@@ -28,7 +28,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
 
 
-            public void RefreshMatch(IDTO _dto)
+            public void RefreshMatch(IDTO _dto, SynchronizationContext? _context)
             {
                 var dto = _dto as ContentListResponseDTO;
                 razor_.__debugMatch = dto?.Value.ToString();
@@ -55,7 +55,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             var reqMatch = new ContentMatchRequest();
             var dtoMatch = new ContentMatchRequestDTO(reqMatch);
             logger_?.Trace("invoke OnMatchSubmit");
-            await bridge.OnMatchSubmit(dtoMatch);
+            await bridge.OnMatchSubmit(dtoMatch, null);
 
         }
 
