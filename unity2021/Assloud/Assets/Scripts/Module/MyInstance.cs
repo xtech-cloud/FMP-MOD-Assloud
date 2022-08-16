@@ -15,8 +15,8 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
     /// </summary>
     public class MyInstance : MyInstanceBase
     {
-        public MyInstance(string _uid, string _style, MyConfig _config, LibMVCS.Logger _logger, Dictionary<string, Any> _settings, MyEntryBase _entry) 
-            : base(_uid, _style, _config, _logger, _settings, _entry)
+        public MyInstance(string _uid, string _style, MyConfig _config, LibMVCS.Logger _logger, Dictionary<string, Any> _settings, MyEntryBase _entry, MonoBehaviour _mono, GameObject _rootAttachments)
+            : base(_uid, _style, _config, _logger, _settings, _entry, _mono, _rootAttachments)
         {
         }
 
@@ -45,7 +45,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <summary>
         /// 当被打开时
         /// </summary>
-        public void HandleOpened()
+        public void HandleOpened(string _source, string _uri)
         {
             rootUI.gameObject.SetActive(true);
             var req = new ContentMatchRequest();

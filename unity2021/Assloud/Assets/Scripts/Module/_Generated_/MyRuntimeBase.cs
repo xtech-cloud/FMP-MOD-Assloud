@@ -24,6 +24,11 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         public GameObject rootUI { get; private set; }
 
         /// <summary>
+        /// 附件的根对象
+        /// </summary>
+        public GameObject rootAttachment { get; private set; }
+
+        /// <summary>
         /// ui的实例对象
         /// </summary>
         public GameObject instanceUI { get; private set; }
@@ -55,18 +60,33 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         /// <param name="_uiSlot">ui的挂载槽</param>
         public virtual void ProcessRoot(GameObject _root, Transform _uiSlot)
         {
+            string attachmentsRootName = string.Format("[Attachments_Root_({0})]", MyEntry.ModuleName);
+            var attachmentsRoot = _root.transform.Find(attachmentsRootName);
+            if (null != attachmentsRoot)
+            {
+                rootAttachment = attachmentsRoot.gameObject;
+                rootAttachment.transform.SetParent(null);
+            }
+
+            string uiRootName = string.Format("Canvas/[UI_Root_({0})]", MyEntry.ModuleName);
+            var uiRoot = _root.transform.Find(uiRootName);
+            if (null == uiRoot)
+            {
+                logger_.Error("{0} not found", uiRoot);
+                return;
+            }
+
             // 将ui挂载到指定的槽上
-            var root = _root.transform.Find(string.Format("Canvas/[UI_Root_({0})]", MyEntry.ModuleName));
-            rootUI = root.gameObject;
-            root.SetParent(_uiSlot);
+            rootUI = uiRoot.gameObject;
+            rootUI.transform.SetParent(_uiSlot);
             // 挂载后重置参数
-            root.localScale = Vector3.one;
-            root.localRotation = Quaternion.identity;
-            root.localPosition = Vector3.zero;
-            RectTransform rt = root.GetComponent<RectTransform>();
+            rootUI.transform.localScale = Vector3.one;
+            rootUI.transform.localRotation = Quaternion.identity;
+            rootUI.transform.localPosition = Vector3.zero;
+            RectTransform rt = rootUI.GetComponent<RectTransform>();
             rt.sizeDelta = Vector2.zero;
             rt.anchoredPosition = Vector2.zero;
-            root.gameObject.SetActive(config_.ui.visible);
+            rootUI.SetActive(config_.ui.visible);
             // 销毁根对象
             GameObject.Destroy(_root);
             // 查找实例的对象
@@ -147,7 +167,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
                 yield break;
             }
 
-            instance = new MyInstance(_uid, _style, config_, logger_, settings_, entry_);
+            instance = new MyInstance(_uid, _style, config_, logger_, settings_, entry_, mono_, rootAttachment);
             instances[_uid] = instance;
             instance.InstantiateUI(instanceUI);
             instance.ApplyStyle();
@@ -190,7 +210,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
                 yield break;
             }
             yield return new WaitForSeconds(_delay);
-            instance.HandleOpened();
+            instance.HandleOpened(_source, _uri);
         }
 
         private IEnumerator closeInstanceAsync(string _uid, float _delay)
