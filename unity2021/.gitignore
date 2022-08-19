@@ -13,4 +13,5 @@
 /Assloud/*.sln
 /Assloud/*.csproj
 /Assloud/.vsconfig
+/Assloud/.vs/
 /.UNITY_HOME.env
