@@ -7,10 +7,10 @@ generate:
   unity_solution: true
 publish:
   active: true
-  environment: product
-  repository: grpc://localhost:28000
+  environment: develop
+  repository: grpc://nps.meex.cloud:28000
 deploy:
   active: true
-  environment: product
-  repository: grpc://localhost:28000
+  environment: develop
+  repository: grpc://nps.meex.cloud:28000
   agent_port: 28001
