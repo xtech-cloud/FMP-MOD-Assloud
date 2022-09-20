@@ -48,6 +48,44 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         /// </summary>
         protected Options? options_;
 
+        protected Dictionary<string, BundleFacade?> facadeBundleStaticMap_ = new Dictionary<string, BundleFacade?>();
+        protected Dictionary<string, BundleModel?> modelBundleStaticMap_ = new Dictionary<string, BundleModel?>();
+        protected Dictionary<string, BundleView?> viewBundleStaticMap_ = new Dictionary<string, BundleView?>();
+        protected Dictionary<string, BundleController?> controllerBundleStaticMap_ = new Dictionary<string, BundleController?>();
+        protected Dictionary<string, BundleService?> serviceBundleStaticMap_ = new Dictionary<string, BundleService?>();
+
+        protected Dictionary<string, BundleFacade?> facadeBundleDynamicMap_ = new Dictionary<string, BundleFacade?>();
+        protected Dictionary<string, BundleModel?> modelBundleDynamicMap_ = new Dictionary<string, BundleModel?>();
+        protected Dictionary<string, BundleView?> viewBundleDynamicMap_ = new Dictionary<string, BundleView?>();
+        protected Dictionary<string, BundleController?> controllerBundleDynamicMap_ = new Dictionary<string, BundleController?>();
+        protected Dictionary<string, BundleService?> serviceBundleDynamicMap_ = new Dictionary<string, BundleService?>();
+
+        /// <summary>
+        /// 获取Bundle的UI装饰层
+        /// </summary>
+        /// <param name="_gid">直系的组的ID</param>
+        /// <returns>UI装饰层</returns>
+        public BundleFacade? getStaticBundleFacade(string _gid)
+        {
+            BundleFacade? facade = null;
+            if (!facadeBundleStaticMap_.TryGetValue(BundleFacade.NAME + "." + _gid, out facade))
+                return null;
+            return facade;
+        }
+
+        /// <summary>
+        /// 获取Bundle的UI装饰层
+        /// </summary>
+        /// <param name="_gid">直系的组的ID</param>
+        /// <returns>UI装饰层</returns>
+        public BundleFacade? getDynamicBundleFacade(string _gid)
+        {
+            BundleFacade? facade = null;
+            if (!facadeBundleDynamicMap_.TryGetValue(BundleFacade.NAME + "." + _gid, out facade))
+                return null;
+            return facade;
+        }
+
         protected Dictionary<string, ContentFacade?> facadeContentStaticMap_ = new Dictionary<string, ContentFacade?>();
         protected Dictionary<string, ContentModel?> modelContentStaticMap_ = new Dictionary<string, ContentModel?>();
         protected Dictionary<string, ContentView?> viewContentStaticMap_ = new Dictionary<string, ContentView?>();
@@ -190,6 +228,31 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             }
 
             // 注册数据层
+            var modelBundle = new BundleModel(BundleModel.NAME + "." + _gid, _gid);
+            modelBundleStaticMap_[BundleModel.NAME + "." + _gid] = modelBundle;
+            framework_.getStaticPipe().RegisterModel(modelBundle);
+            // 注册视图层
+            var viewBundle = new BundleView(BundleView.NAME + "." + _gid, _gid);
+            viewBundleStaticMap_[BundleView.NAME + "." + _gid] = viewBundle;
+            framework_.getStaticPipe().RegisterView(viewBundle);
+            // 注册控制层
+            var controllerBundle = new BundleController(BundleController.NAME + "." + _gid, _gid);
+            controllerBundleStaticMap_[BundleController.NAME + "." + _gid] = controllerBundle;
+            framework_.getStaticPipe().RegisterController(controllerBundle);
+            // 注册服务层
+            var serviceBundle = new BundleService(BundleService.NAME + "." + _gid, _gid);
+            serviceBundleStaticMap_[BundleService.NAME + "." + _gid] = serviceBundle;
+            framework_.getStaticPipe().RegisterService(serviceBundle);
+            serviceBundle.InjectGrpcChannel(options_?.getChannel());
+            // 注册UI装饰层
+            var facadeBundle = new BundleFacade(BundleFacade.NAME + "." + _gid, _gid);
+            facadeBundleStaticMap_[BundleFacade.NAME + "." + _gid] = facadeBundle;
+            var bridgeBundle = new BundleViewBridge();
+            bridgeBundle.service = serviceBundle;
+            facadeBundle.setViewBridge(bridgeBundle);
+            framework_.getStaticPipe().RegisterFacade(facadeBundle);
+
+            // 注册数据层
             var modelContent = new ContentModel(ContentModel.NAME + "." + _gid, _gid);
             modelContentStaticMap_[ContentModel.NAME + "." + _gid] = modelContent;
             framework_.getStaticPipe().RegisterModel(modelContent);
@@ -283,6 +346,31 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             }
 
             // 注册数据层
+            var modelBundle = new BundleModel(BundleModel.NAME + "." + _gid, _gid);
+            modelBundleDynamicMap_[BundleModel.NAME + "." + _gid] = modelBundle;
+            framework_.getDynamicPipe().PushModel(modelBundle);
+            // 注册视图层
+            var viewBundle = new BundleView(BundleView.NAME + "." + _gid, _gid);
+            viewBundleDynamicMap_[BundleView.NAME + "." + _gid] = viewBundle;
+            framework_.getDynamicPipe().PushView(viewBundle);
+            // 注册控制层
+            var controllerBundle = new BundleController(BundleController.NAME + "." + _gid, _gid);
+            controllerBundleDynamicMap_[BundleController.NAME + "." + _gid] = controllerBundle;
+            framework_.getDynamicPipe().PushController(controllerBundle);
+            // 注册服务层
+            var serviceBundle = new BundleService(BundleService.NAME + "." + _gid, _gid);
+            serviceBundleDynamicMap_[BundleService.NAME + "." + _gid] = serviceBundle;
+            framework_.getDynamicPipe().PushService(serviceBundle);
+            serviceBundle.InjectGrpcChannel(options_?.getChannel());
+            // 注册UI装饰层
+            var facadeBundle = new BundleFacade(BundleFacade.NAME + "." + _gid, _gid);
+            facadeBundleDynamicMap_[BundleFacade.NAME + "." + _gid] = facadeBundle;
+            var bridgeBundle = new BundleViewBridge();
+            bridgeBundle.service = serviceBundle;
+            facadeBundle.setViewBridge(bridgeBundle);
+            framework_.getDynamicPipe().PushFacade(facadeBundle);
+
+            // 注册数据层
             var modelContent = new ContentModel(ContentModel.NAME + "." + _gid, _gid);
             modelContentDynamicMap_[ContentModel.NAME + "." + _gid] = modelContent;
             framework_.getDynamicPipe().PushModel(modelContent);
@@ -373,6 +461,42 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             if (null == framework_)
             {
                 return Error.NewNullErr("framework is null");
+            }
+
+            // 注销服务层
+            BundleService? serviceBundle;
+            if(serviceBundleStaticMap_.TryGetValue(BundleService.NAME + "." + _gid, out serviceBundle))
+            {
+                framework_.getStaticPipe().CancelService(serviceBundle);
+                serviceBundleStaticMap_.Remove(BundleService.NAME + "." +_gid);
+            }
+            // 注销控制层
+            BundleController? controllerBundle;
+            if(controllerBundleStaticMap_.TryGetValue(BundleController.NAME + "." + _gid, out controllerBundle))
+            {
+                framework_.getStaticPipe().CancelController(controllerBundle);
+                controllerBundleStaticMap_.Remove(BundleController.NAME + "." +_gid);
+            }
+            // 注销视图层
+            BundleView? viewBundle;
+            if(viewBundleStaticMap_.TryGetValue(BundleView.NAME + "." + _gid, out viewBundle))
+            {
+                framework_.getStaticPipe().CancelView(viewBundle);
+                viewBundleStaticMap_.Remove(BundleView.NAME + "." +_gid);
+            }
+            // 注销UI装饰层
+            BundleFacade? facadeBundle;
+            if(facadeBundleStaticMap_.TryGetValue(BundleFacade.NAME + "." + _gid, out facadeBundle))
+            {
+                framework_.getStaticPipe().CancelFacade(facadeBundle);
+                facadeBundleStaticMap_.Remove(BundleFacade.NAME + "." +_gid);
+            }
+            // 注销数据层
+            BundleModel? modelBundle;
+            if(modelBundleStaticMap_.TryGetValue(BundleModel.NAME + "." + _gid, out modelBundle))
+            {
+                framework_.getStaticPipe().CancelModel(modelBundle);
+                modelBundleStaticMap_.Remove(BundleModel.NAME + "." +_gid);
             }
 
             // 注销服务层
@@ -499,6 +623,42 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             if (null == framework_)
             {
                 return Error.NewNullErr("framework is null");
+            }
+
+            // 注销服务层
+            BundleService? serviceBundle;
+            if(serviceBundleDynamicMap_.TryGetValue(BundleService.NAME + "." + _gid, out serviceBundle))
+            {
+                framework_.getDynamicPipe().PopService(serviceBundle);
+                serviceBundleDynamicMap_.Remove(BundleService.NAME + "." +_gid);
+            }
+            // 注销控制层
+            BundleController? controllerBundle;
+            if(controllerBundleDynamicMap_.TryGetValue(BundleController.NAME + "." + _gid, out controllerBundle))
+            {
+                framework_.getDynamicPipe().PopController(controllerBundle);
+                controllerBundleDynamicMap_.Remove(BundleController.NAME + "." +_gid);
+            }
+            // 注销视图层
+            BundleView? viewBundle;
+            if(viewBundleDynamicMap_.TryGetValue(BundleView.NAME + "." + _gid, out viewBundle))
+            {
+                framework_.getDynamicPipe().PopView(viewBundle);
+                viewBundleDynamicMap_.Remove(BundleView.NAME + "." +_gid);
+            }
+            // 注销UI装饰层
+            BundleFacade? facadeBundle;
+            if(facadeBundleDynamicMap_.TryGetValue(BundleFacade.NAME + "." + _gid, out facadeBundle))
+            {
+                framework_.getDynamicPipe().PopFacade(facadeBundle);
+                facadeBundleDynamicMap_.Remove(BundleFacade.NAME + "." +_gid);
+            }
+            // 注销数据层
+            BundleModel? modelBundle;
+            if(modelBundleDynamicMap_.TryGetValue(BundleModel.NAME + "." + _gid, out modelBundle))
+            {
+                framework_.getDynamicPipe().PopModel(modelBundle);
+                modelBundleDynamicMap_.Remove(BundleModel.NAME + "." +_gid);
             }
 
             // 注销服务层

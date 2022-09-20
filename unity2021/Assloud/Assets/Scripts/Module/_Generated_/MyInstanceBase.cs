@@ -24,6 +24,8 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         public ObjectsPool themeObjectsPool { get; private set; }
 
 
+        public IBundleViewBridge viewBridgeBundle { get; set; }
+
         public IContentViewBridge viewBridgeContent { get; set; }
 
         public IDesignerViewBridge viewBridgeDesigner { get; set; }
@@ -71,6 +73,12 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
 
         public void SetupBridges()
         {
+
+            var facadeBundle = entry_.getDynamicBundleFacade(uid);
+            var bridgeBundle = new BundleUiBridge();
+            bridgeBundle.logger = logger_;
+            facadeBundle.setUiBridge(bridgeBundle);
+            viewBridgeBundle = facadeBundle.getViewBridge() as IBundleViewBridge;
 
             var facadeContent = entry_.getDynamicContentFacade(uid);
             var bridgeContent = new ContentUiBridge();
@@ -196,6 +204,132 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
             return _uri;
         }
 
+
+        protected virtual void submitBundleCreate(BundleCreateRequest _request)
+        {
+            var dto = new BundleCreateRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnCreateSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleUpdate(BundleUpdateRequest _request)
+        {
+            var dto = new BundleUpdateRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnUpdateSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleRetrieve(UuidRequest _request)
+        {
+            var dto = new UuidRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnRetrieveSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleDelete(UuidRequest _request)
+        {
+            var dto = new UuidRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnDeleteSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleList(BundleListRequest _request)
+        {
+            var dto = new BundleListRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnListSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleSearch(BundleSearchRequest _request)
+        {
+            var dto = new BundleSearchRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnSearchSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
 
         protected virtual void submitContentMatch(ContentMatchRequest _request)
         {

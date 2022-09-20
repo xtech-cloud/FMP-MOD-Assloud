@@ -24,7 +24,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         {
         }
 
-        public override void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response, SynchronizationContext? _context)
+        public override void UpdateProtoMatch(ContentModel.ContentStatus? _status, ContentListResponse _response, object? _context)
         {
             if (null != _status)
             {

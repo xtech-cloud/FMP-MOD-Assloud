@@ -8,14 +8,46 @@ package xtc.fmp.assloud;
 // 内容
 service Content
 {
+    // 创建
+    rpc Create(ContentCreateRequest) returns (UuidResponse) {}
+    // 更新
+    rpc Update(ContentUpdateRequest) returns (UuidResponse) {}
+    // 读取
+    rpc Retrieve(UuidRequest) returns (ContentRetrieveResponse) {}
+    // 删除
+    rpc Delete(UuidRequest) returns (UuidResponse) {}
+    // 列举
+    rpc List(ContentListRequest) returns (ContentListResponse) {}
+    // 搜索
+    rpc Search(ContentSearchRequest) returns (ContentListResponse) {}
     // 匹配
     rpc Match(ContentMatchRequest) returns (ContentListResponse) { }
 }
 
-// 匹配包的请求
-message ContentMatchRequest
+message ContentCreateRequest
 {
-    repeated string patterns = 1; //  匹配模式列表
+    string bundle = 1; // 包的uuid
+    string name = 2;  // 内容的名称
+}
+
+message ContentUpdateRequest
+{
+    string uuid = 1; // 内容的uuid
+    string name = 2;  // 内容的名称（仅支持字母、数字、下划线和点）
+    repeated string labels = 4; // 预设标签
+    repeated string tags = 5; // 自定义标签
+}
+
+message ContentRetrieveResponse
+{
+    Status status = 1; // 回复的状态
+    ContentEntity content = 2; //  内容的实体
+}
+
+message ContentListRequest
+{
+    int64 offset = 1;  // 偏移值
+    int64 count = 2;  // 数量
 }
 
 // 内容列表的回复
@@ -25,3 +57,19 @@ message ContentListResponse
     int64 total = 2;  // 总数
     repeated ContentEntity contents = 3;   // 内容的数组
 }
+
+message ContentSearchRequest
+{
+    int64 offset = 1;  // 偏移值
+    int64 count = 2;  // 数量
+    string name = 3;  // 名称
+    repeated string labels = 4;  // 预设标签
+    repeated string tags = 5;  // 自定义标签
+}
+
+// 匹配包的请求
+message ContentMatchRequest
+{
+    repeated string patterns = 1; //  匹配模式列表
+}
+

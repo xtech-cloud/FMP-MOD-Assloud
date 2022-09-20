@@ -1,0 +1,131 @@
+@page "/xtc/assloud/bundle"
+
+@using System.ComponentModel
+@using AntDesign.TableModels
+
+<Card>
+    <Form @ref="searchForm"
+          Loading="searchLoading"
+          Model="searchFormData"
+          OnFinish="@onSearchSubmit">
+        <Row Gutter="24">
+            @for (var i = 0; i < (searchExpand ? searchFormData.Count : (searchFormData.Count < 3 ? searchFormData.Count : 3)); i++)
+            {
+                var index = i;
+                <GridCol Span="8" @key="index">
+                    <FormItem Label="@(context[index].Text)">
+                        <Input @bind-Value="@(context[index].Value)" Placeholder="请输入" />
+                    </FormItem>
+                </GridCol>
+            }
+        </Row>
+        <Row>
+            <GridCol Span="24" Style="text-align:right;">
+                <Button Type="primary" HtmlType="submit">查询</Button>
+                <Button Style="margin: 0 8px;" OnClick="@onSearchResetClick">重置</Button>
+                <!--
+                <a style="font-size:12px" onclick="()=>{}">
+                    <Icon Type="@(searchExpand?"up":"down")"></Icon>  Collapse
+                </a>
+                -->
+            </GridCol>
+        </Row>
+    </Form>
+</Card>
+
+<Card Style="margin-top:24px">
+    <div style="display:flex; margin-bottom:24px;">
+        <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" OnClick="@onCreateClick">创建</Button>
+    </div>
+    <Table TItem="TableModel" DataSource="@tableModel" Total="@tableTotal" PageIndex="tablePageIndex" PageSize="tablePageSize" OnPageIndexChange="onPageIndexChanged">
+        <PropertyColumn Property="c=>c.Name"></PropertyColumn>
+        <PropertyColumn Property="c=>c.Summary"></PropertyColumn>
+        <PropertyColumn Property="c=>c.Labels">
+            @foreach (var label in context.Labels)
+            {
+                <Tag Color="green">@label</Tag>
+            }
+        </PropertyColumn>
+        <PropertyColumn Property="c=>c.Tags">
+            @foreach (var tag in context.Tags)
+            {
+                <Tag Color="green">@tag</Tag>
+            }
+        </PropertyColumn>
+        <ActionColumn Title="操作" Fixed="right" Width="150">
+            <Space Size=@("middle")>
+                <SpaceItem>
+                    <Button Size="small" OnClick="()=>onBrowseClick(context.Uuid)">浏览</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button Size="small" OnClick="()=>onUpdateClick(context.Uuid)">更改</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Popconfirm Title="确定要删除这个包吗?"
+                                OnConfirm="@(()=>onConfirmDelete(context.Uuid))"
+                                OnCancel="onCancelDelete"
+                                OkText="确定"
+                                CancelText="取消">
+                        <Button Danger Size="small">删除</Button>
+                    </Popconfirm>
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+</Card>
+
+<Modal Title="创建包"
+       Visible="@visibleCreateModal"
+       ConfirmLoading="@createLoading"
+       OnOk="@onCreateModalOk"
+       OnCancel="@onCreateModalCancel">
+    <Form Model="@createModel"
+          LabelColSpan="8"
+          WrapperColSpan="16"
+          OnFinish="onCreateSubmit"
+          @ref="@createForm">
+        <FormItem Label="名称">
+            <Input @bind-Value="@context.Name" />
+        </FormItem>
+        <FormItem Label="简介">
+            <Input @bind-Value="@context.Summary" />
+        </FormItem>
+    </Form>
+</Modal>
+
+<Modal Title="更新包"
+       Visible="@visibleUpdateModal"
+       ConfirmLoading="@updateLoading"
+       OnOk="@onUpdateModalOk"
+       OnCancel="@onUpdateModalCancel">
+    <Form Model="@updateModel"
+          LabelColSpan="8"
+          WrapperColSpan="16"
+          OnFinish="onUpdateSubmit"
+          @ref="@updateForm">
+        <FormItem Label="名称">
+            <Input @bind-Value="@context.Name" />
+        </FormItem>
+        <FormItem Label="简介">
+            <Input @bind-Value="@context.Summary" />
+        </FormItem>
+        <FormItem Label="预设标签">
+            <Input @bind-Value="@context.Labels" />
+        </FormItem>
+        <FormItem Label="自定义标签">
+            <Input @bind-Value="@context.Tags" />
+        </FormItem>
+    </Form>
+</Modal>
+
+
+<style>
+    .card-search-col {
+        margin-right: 64px;
+        margin-bottom: 24px;
+    }
+</style>
+
+@code {
+}
+

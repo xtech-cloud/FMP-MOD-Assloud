@@ -8,5 +8,61 @@ package xtc.fmp.assloud;
 // 包
 service Bundle
 {
+    // 创建
+    rpc Create(BundleCreateRequest) returns (UuidResponse) {}
+    // 更新
+    rpc Update(BundleUpdateRequest) returns (UuidResponse) {}
+    // 读取
+    rpc Retrieve(UuidRequest) returns (BundleRetrieveResponse) {}
+    // 删除
+    rpc Delete(UuidRequest) returns (UuidResponse) {}
+    // 列举
+    rpc List(BundleListRequest) returns (BundleListResponse) {}
+    // 搜索
+    rpc Search(BundleSearchRequest) returns (BundleListResponse) {}
 }
 
+message BundleCreateRequest
+{
+    string name = 1;  // 包的名称（cloud.xtech.xxx.xxx的形式）
+    string summary = 2;  // 包的简介
+}
+
+message BundleUpdateRequest
+{
+    string uuid = 1; // 包的uuid
+    string name = 2;  // 包的名称（cloud.xtech.xxx.xxx的形式）
+    string summary = 3;  // 包的简介
+    repeated string labels = 4; // 预设标签
+    repeated string tags = 5; // 自定义标签
+    map<string, string> summary_i18n = 200; // 简介的多国语言
+}
+
+message BundleRetrieveResponse
+{
+    Status status = 1; // 回复的状态
+    BundleEntity bundle = 2; //  包的实体
+    repeated ContentEntity contents = 3; // 内容的实体的列表
+}
+
+message BundleListRequest
+{
+    int64 offset = 1;  // 偏移值
+    int64 count = 2;  // 数量
+}
+
+message BundleListResponse
+{
+    Status status = 1;  // 状态
+    int64 total = 2;  // 总数
+    repeated BundleEntity bundles = 3;  // 包的实体列表
+}
+
+message BundleSearchRequest
+{
+    int64 offset = 1;  // 偏移值
+    int64 count = 2;  // 数量
+    string name = 3;  // 名称
+    repeated string labels = 4;  // 预设标签
+    repeated string tags = 5;  // 自定义标签
+}

@@ -13,12 +13,12 @@ public class IntegrationTest : IntegrationTestBase
 
     public class ContentUiBridge : IContentUiBridge
     {
-        public void Alert(string _code, string _message, SynchronizationContext? _context)
+        public void Alert(string _code, string _message, object? _context)
         {
             throw new Exception(_message);
         }
 
-        public void RefreshMatch(IDTO _dto, SynchronizationContext? _context)
+        public void RefreshMatch(IDTO _dto, object? _context)
         {
             var dto = _dto as ContentListResponseDTO;
             Assert.NotEmpty(dto?.Value.Contents);

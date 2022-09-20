@@ -9,6 +9,72 @@ using XTC.FMP.MOD.Assloud.LIB.Bridge;
 namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 {
 
+    public class BundleCreateRequestDTO : IDTO
+    {
+        public BundleCreateRequestDTO(BundleCreateRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleCreateRequest Value;
+    }
+
+
+
+    public class BundleUpdateRequestDTO : IDTO
+    {
+        public BundleUpdateRequestDTO(BundleUpdateRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleUpdateRequest Value;
+    }
+
+
+
+    public class BundleRetrieveResponseDTO : IDTO
+    {
+        public BundleRetrieveResponseDTO(BundleRetrieveResponse _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleRetrieveResponse Value;
+    }
+
+
+
+    public class BundleListRequestDTO : IDTO
+    {
+        public BundleListRequestDTO(BundleListRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleListRequest Value;
+    }
+
+
+
+    public class BundleListResponseDTO : IDTO
+    {
+        public BundleListResponseDTO(BundleListResponse _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleListResponse Value;
+    }
+
+
+
+    public class BundleSearchRequestDTO : IDTO
+    {
+        public BundleSearchRequestDTO(BundleSearchRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleSearchRequest Value;
+    }
+
+
+
     public class ContentMatchRequestDTO : IDTO
     {
         public ContentMatchRequestDTO(ContentMatchRequest _value)
@@ -152,6 +218,17 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
 
+    public class UuidRequestDTO : IDTO
+    {
+        public UuidRequestDTO(UuidRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly UuidRequest Value;
+    }
+
+
+
     public class UuidResponseDTO : IDTO
     {
         public UuidResponseDTO(UuidResponse _value)
@@ -181,6 +258,17 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             Value = _value;    
         }
         public readonly ContentEntity Value;
+    }
+
+
+
+    public class BundleEntityDTO : IDTO
+    {
+        public BundleEntityDTO(BundleEntity _value)
+        {
+            Value = _value;    
+        }
+        public readonly BundleEntity Value;
     }
 
 

@@ -16,6 +16,10 @@ public class TestFixture : TestFixtureBase
         base.Dispose();
     }
 
+    protected override void newBundleService()
+    {
+        serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()));
+    }
 
     protected override void newContentService()
     {

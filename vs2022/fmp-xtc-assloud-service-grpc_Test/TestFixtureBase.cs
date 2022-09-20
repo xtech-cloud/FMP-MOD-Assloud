@@ -24,6 +24,25 @@ public abstract class TestFixtureBase : IDisposable
     }
 
 
+    protected BundleService? serviceBundle_ { get; set; }
+
+    public BundleService getServiceBundle()
+    {
+        if(null == serviceBundle_)
+        {
+            newBundleService();
+        }
+        return serviceBundle_!;
+    }
+
+    /// <summary>
+    /// 实例化服务
+    /// </summary>
+    /// <example>
+    /// serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()));
+    /// </example>
+    protected abstract void newBundleService();
+
     protected ContentService? serviceContent_ { get; set; }
 
     public ContentService getServiceContent()

@@ -34,6 +34,12 @@ message ScopeResponse
     string scope = 2;  // 作用域
 }
 
+// Uuid的请求
+message UuidRequest
+{
+    string uuid = 1;  // 全局唯一识别码
+}
+
 // Uuid的回复
 message UuidResponse
 {
@@ -62,8 +68,21 @@ message MetaEntity
 
 message ContentEntity
 {
-    string path = 1;  // 内容的路径
-    string bundle = 2;  // 内容的包名
+    string uuid = 1; // 包的uuid
+    string bundle = 2;  // 包的名称
     string name = 3;  // 内容的名称
+    repeated string labels = 4; // 预设标签
+    repeated string tags = 5; // 自定义标签
     MetaEntity meta = 10;  // 内容的元数据
+}
+
+message BundleEntity
+{
+    string uuid = 1; // 包的uuid
+    string name = 2;  // 包的名称（cloud.xtech.xxx.xxx的形式）
+    string summary = 3;  // 包的简介
+    repeated string labels = 4; // 预设标签
+    repeated string tags = 5; // 自定义标签
+    int64 size = 100; // 包的大小
+    map<string, string> summary_i18n = 200; // 简介的多国语言
 }
