@@ -24,6 +24,96 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
         /// <summary>
+        /// 处理Create的提交
+        /// </summary>
+        /// <param name="_dto">ContentCreateRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnCreateSubmit(IDTO _dto, object? _context)
+        {
+            ContentCreateRequestDTO? dto = _dto as ContentCreateRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallCreate(dto?.Value, _context);
+        }
+
+        /// <summary>
+        /// 处理Update的提交
+        /// </summary>
+        /// <param name="_dto">ContentUpdateRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnUpdateSubmit(IDTO _dto, object? _context)
+        {
+            ContentUpdateRequestDTO? dto = _dto as ContentUpdateRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallUpdate(dto?.Value, _context);
+        }
+
+        /// <summary>
+        /// 处理Retrieve的提交
+        /// </summary>
+        /// <param name="_dto">UuidRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnRetrieveSubmit(IDTO _dto, object? _context)
+        {
+            UuidRequestDTO? dto = _dto as UuidRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallRetrieve(dto?.Value, _context);
+        }
+
+        /// <summary>
+        /// 处理Delete的提交
+        /// </summary>
+        /// <param name="_dto">UuidRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnDeleteSubmit(IDTO _dto, object? _context)
+        {
+            UuidRequestDTO? dto = _dto as UuidRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallDelete(dto?.Value, _context);
+        }
+
+        /// <summary>
+        /// 处理List的提交
+        /// </summary>
+        /// <param name="_dto">ContentListRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnListSubmit(IDTO _dto, object? _context)
+        {
+            ContentListRequestDTO? dto = _dto as ContentListRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallList(dto?.Value, _context);
+        }
+
+        /// <summary>
+        /// 处理Search的提交
+        /// </summary>
+        /// <param name="_dto">ContentSearchRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnSearchSubmit(IDTO _dto, object? _context)
+        {
+            ContentSearchRequestDTO? dto = _dto as ContentSearchRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallSearch(dto?.Value, _context);
+        }
+
+        /// <summary>
         /// 处理Match的提交
         /// </summary>
         /// <param name="_dto">ContentMatchRequest的数据传输对象</param>

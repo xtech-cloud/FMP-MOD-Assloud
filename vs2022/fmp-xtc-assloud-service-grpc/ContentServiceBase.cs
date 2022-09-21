@@ -17,6 +17,138 @@ namespace XTC.FMP.MOD.Assloud.App.Service
     {
     
 
+        public override async Task<UuidResponse> Create(ContentCreateRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeCreate(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<UuidResponse> Update(ContentUpdateRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeUpdate(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<ContentRetrieveResponse> Retrieve(UuidRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeRetrieve(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new ContentRetrieveResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new ContentRetrieveResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<UuidResponse> Delete(UuidRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeDelete(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<ContentListResponse> List(ContentListRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeList(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new ContentListResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new ContentListResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<ContentListResponse> Search(ContentSearchRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeSearch(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new ContentListResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new ContentListResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
         public override async Task<ContentListResponse> Match(ContentMatchRequest _request, ServerCallContext _context)
         {
             try
@@ -40,6 +172,48 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         }
 
 
+
+        protected virtual async Task<UuidResponse> safeCreate(ContentCreateRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new UuidResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<UuidResponse> safeUpdate(ContentUpdateRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new UuidResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<ContentRetrieveResponse> safeRetrieve(UuidRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new ContentRetrieveResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<UuidResponse> safeDelete(UuidRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new UuidResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<ContentListResponse> safeList(ContentListRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new ContentListResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<ContentListResponse> safeSearch(ContentSearchRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new ContentListResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
 
         protected virtual async Task<ContentListResponse> safeMatch(ContentMatchRequest _request, ServerCallContext _context)
         {

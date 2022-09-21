@@ -21,6 +21,36 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
         }
 
 
+        public virtual void RefreshCreate(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshUpdate(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshRetrieve(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshDelete(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshList(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshSearch(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual void RefreshMatch(IDTO _dto, object _context)
         {
             throw new NotImplementedException();

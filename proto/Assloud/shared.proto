@@ -47,42 +47,76 @@ message UuidResponse
     string uuid = 2;  // 全局唯一识别码
 }
 
-message MetaEntity
+// 准备上传的请求
+message PrepareUploadRequest
 {
-    string format = 1; // 格式
-    string uri = 2; // bundle/content格式的短路径
-    map<string, string> kv = 3; // 键值对
-    string alias = 100; // 别名
-    string title = 101; // 主标题
-    string caption = 102; // 副标题
-    string label = 103; // 标签
-    string topic = 104; // 标语
-    string description = 105; // 说明描述
-    map<string, string> alias_i18n = 200; // 别名的多国语言
-    map<string, string> title_i18n = 201; // 主标题的多国语言
-    map<string, string> caption_i18n = 202; // 副标题的多国语言
-    map<string, string> label_i18n = 203; // 标签的多国语言
-    map<string, string> topic_i18n = 204; // 标语的多国语言
-    map<string, string> description_i18n = 205; // 说明描述的多国语言
+    string uuid = 1;  // bundle或content的uuid
+    string filepath = 2;  // 文件路径
+}
+
+// 准备上传的回复
+message PrepareUploadResponse
+{
+    Status status = 1;  // 状态
+    string filepath = 2;  // 文件路径
+    string url  = 3;  // 上传的地址
+}
+
+// 完成上传的请求
+message FlushUploadRequest
+{
+    string uuid = 1;  // bundle或content的uuid
+    string filepath = 2;  // 文件路径
+}
+
+// 完成上传的回复
+message FlushUploadResponse {
+    Status status = 1;  // 状态
+    string filepath = 2;  // 文件路径
+    string hash = 3;  // 文件哈希值
+    uint64 size = 4;  // 文件大小
+    string url  = 5;  // 访问地址
+}
+
+message AssetSubEntity
+{
+    string path = 1;  // 路径
+    string hash = 2;  // 哈希值
+    uint64 size = 3; // 大小
 }
 
 message ContentEntity
 {
-    string uuid = 1; // 包的uuid
-    string bundle = 2;  // 包的名称
-    string name = 3;  // 内容的名称
-    repeated string labels = 4; // 预设标签
-    repeated string tags = 5; // 自定义标签
-    MetaEntity meta = 10;  // 内容的元数据
+    string uuid = 1; // 内容的uuid
+    string name = 2; // 内容的名称
+    map<string, string> kv = 10; // 键值对
+    string alias = 20; // 别名
+    string title = 21; // 主标题
+    string caption = 22; // 副标题
+    string label = 23; // 标签
+    string topic = 24; // 标语
+    string description = 25; // 说明描述
+    map<string, string> alias_i18n = 50; // 别名的多国语言
+    map<string, string> title_i18n = 51; // 主标题的多国语言
+    map<string, string> caption_i18n = 52; // 副标题的多国语言
+    map<string, string> label_i18n = 53; // 标签的多国语言
+    map<string, string> topic_i18n = 54; // 标语的多国语言
+    map<string, string> description_i18n = 55; // 说明描述的多国语言
+
+    repeated string labels = 100; // 预设标签
+    repeated string tags = 101; // 自定义标签
+
+    string bundle_uuid = 1000;  // 包的uuid
+    string bundle_name = 1001;  // 包的名称
 }
 
 message BundleEntity
 {
     string uuid = 1; // 包的uuid
-    string name = 2;  // 包的名称（cloud.xtech.xxx.xxx的形式）
-    string summary = 3;  // 包的简介
-    repeated string labels = 4; // 预设标签
-    repeated string tags = 5; // 自定义标签
-    int64 size = 100; // 包的大小
-    map<string, string> summary_i18n = 200; // 简介的多国语言
+    string name = 2;  // 包的名称
+    int64 size = 3; // 包的大小
+    string summary = 20;  // 包的简介
+    map<string, string> summary_i18n = 50; // 简介的多国语言
+    repeated string labels = 100; // 预设标签
+    repeated string tags = 101; // 自定义标签
 }

@@ -121,6 +121,54 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             bridge?.RefreshSearch(_dto, _context);
         }
 
+        /// <summary>
+        /// 刷新PrepareUpload的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">PrepareUploadResponse的数据传输对象</param>
+        public virtual void RefreshProtoPrepareUpload(Error _err, PrepareUploadResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IBundleUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_PrepareUpload_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshPrepareUpload(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新FlushUpload的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">FlushUploadResponse的数据传输对象</param>
+        public virtual void RefreshProtoFlushUpload(Error _err, FlushUploadResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IBundleUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_FlushUpload_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshFlushUpload(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新FetchAssets的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">BundleFetchAssetsResponse的数据传输对象</param>
+        public virtual void RefreshProtoFetchAssets(Error _err, BundleFetchAssetsResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IBundleUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_FetchAssets_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshFetchAssets(_dto, _context);
+        }
+
 
         /// <summary>
         /// 获取直系数据层

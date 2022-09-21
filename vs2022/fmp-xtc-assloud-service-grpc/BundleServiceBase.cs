@@ -149,6 +149,72 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
         }
 
+        public override async Task<PrepareUploadResponse> PrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safePrepareUpload(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new PrepareUploadResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new PrepareUploadResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<FlushUploadResponse> FlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeFlushUpload(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new FlushUploadResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new FlushUploadResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<BundleFetchAssetsResponse> FetchAssets(UuidRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeFetchAssets(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new BundleFetchAssetsResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new BundleFetchAssetsResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
 
 
         protected virtual async Task<UuidResponse> safeCreate(BundleCreateRequest _request, ServerCallContext _context)
@@ -189,6 +255,27 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         protected virtual async Task<BundleListResponse> safeSearch(BundleSearchRequest _request, ServerCallContext _context)
         {
             return await Task.Run(() => new BundleListResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<PrepareUploadResponse> safePrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new PrepareUploadResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<FlushUploadResponse> safeFlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new FlushUploadResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<BundleFetchAssetsResponse> safeFetchAssets(UuidRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new BundleFetchAssetsResponse {
                     Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
             });
         }

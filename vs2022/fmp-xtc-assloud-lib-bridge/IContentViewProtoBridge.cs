@@ -17,6 +17,42 @@ namespace XTC.FMP.MOD.Assloud.LIB.Bridge
     {
 
         /// <summary>
+        /// 处理Create的提交
+        /// </summary>
+        Task<Error> OnCreateSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 处理Update的提交
+        /// </summary>
+        Task<Error> OnUpdateSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 处理Retrieve的提交
+        /// </summary>
+        Task<Error> OnRetrieveSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 处理Delete的提交
+        /// </summary>
+        Task<Error> OnDeleteSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 处理List的提交
+        /// </summary>
+        Task<Error> OnListSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 处理Search的提交
+        /// </summary>
+        Task<Error> OnSearchSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
         /// 处理Match的提交
         /// </summary>
         Task<Error> OnMatchSubmit(IDTO _dto, object? _context);

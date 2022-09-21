@@ -18,13 +18,12 @@ public class TestFixture : TestFixtureBase
 
     protected override void newBundleService()
     {
-        serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()));
+        serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()), new ContentDAO(new DatabaseOptions()));
     }
 
     protected override void newContentService()
     {
-        throw new NotImplementedException();
-        //serviceContent_ = new ContentService(new ContentDAO(new DatabaseOptions()));
+        serviceContent_ = new ContentService(new ContentDAO(new DatabaseOptions()), new BundleDAO(new DatabaseOptions()));
     }
 
     protected override void newDesignerService()

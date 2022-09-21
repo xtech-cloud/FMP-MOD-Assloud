@@ -26,6 +26,60 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
         /// <summary>
+        /// 更新Create的数据
+        /// </summary>
+        /// <param name="_response">Create的回复</param>
+        public virtual void UpdateProtoCreate(UuidResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoCreate(status_ as ContentModel.ContentStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新Update的数据
+        /// </summary>
+        /// <param name="_response">Update的回复</param>
+        public virtual void UpdateProtoUpdate(UuidResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoUpdate(status_ as ContentModel.ContentStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新Retrieve的数据
+        /// </summary>
+        /// <param name="_response">Retrieve的回复</param>
+        public virtual void UpdateProtoRetrieve(ContentRetrieveResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoRetrieve(status_ as ContentModel.ContentStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新Delete的数据
+        /// </summary>
+        /// <param name="_response">Delete的回复</param>
+        public virtual void UpdateProtoDelete(UuidResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoDelete(status_ as ContentModel.ContentStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新List的数据
+        /// </summary>
+        /// <param name="_response">List的回复</param>
+        public virtual void UpdateProtoList(ContentListResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoList(status_ as ContentModel.ContentStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新Search的数据
+        /// </summary>
+        /// <param name="_response">Search的回复</param>
+        public virtual void UpdateProtoSearch(ContentListResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoSearch(status_ as ContentModel.ContentStatus, _response, _context);
+        }
+
+        /// <summary>
         /// 更新Match的数据
         /// </summary>
         /// <param name="_response">Match的回复</param>

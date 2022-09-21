@@ -32,7 +32,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
                 foreach (ContentEntity entity in _response.Contents)
                 {
-                    _status.contentMap[entity.Meta.Uri] = entity;
+                    //_status.contentMap[entity.Meta.Uri] = entity;
                 }
             }
 

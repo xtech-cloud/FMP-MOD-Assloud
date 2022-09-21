@@ -57,6 +57,24 @@ namespace XTC.FMP.MOD.Assloud.LIB.Bridge
         void RefreshSearch(IDTO _dto, object? _context);
 
 
+        /// <summary>
+        /// 刷新PrepareUpload的数据
+        /// </summary>
+        void RefreshPrepareUpload(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新FlushUpload的数据
+        /// </summary>
+        void RefreshFlushUpload(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新FetchAssets的数据
+        /// </summary>
+        void RefreshFetchAssets(IDTO _dto, object? _context);
+
+
     }
 }
 

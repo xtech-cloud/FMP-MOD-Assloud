@@ -9,8 +9,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 {
     public class BundleService : BundleServiceBase
     {
-        // 解开以下代码的注释，可支持数据库操作
         private readonly BundleDAO bundleDAO_;
+        private readonly ContentDAO contentDAO_;
+        private readonly MinIOClient minioClient_;
 
         /// <summary>
         /// 构造函数
@@ -19,9 +20,13 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// 支持多个参数，均为自动注入，注入点位于MyProgram.PreBuild
         /// </remarks>
         /// <param name="_bundleDAO">自动注入的数据操作对象</param>
-        public BundleService(BundleDAO _bundleDAO)
+        /// <param name="_contentDAO">自动注入的数据操作对象</param>
+        /// <param name="_minioClient">自动注入的MinIO客户端</param>
+        public BundleService(BundleDAO _bundleDAO, ContentDAO _contentDAO, MinIOClient _minioClient)
         {
             bundleDAO_ = _bundleDAO;
+            contentDAO_ = _contentDAO;
+            minioClient_ = _minioClient;
         }
 
         protected override async Task<UuidResponse> safeCreate(BundleCreateRequest _request, ServerCallContext _context)
@@ -77,6 +82,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 bundle.Summary_i18n[pair.Key] = pair.Value;
 
             await bundleDAO_.UpdateAsync(_request.Uuid, bundle);
+
+            //TODO
+            //await contentDAO_.UpdateBundleName(_request.Uuid, _request.Name);
 
             return new UuidResponse
             {
@@ -163,6 +171,98 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             foreach (var bundle in result.Value)
             {
                 response.Bundles.Add(bundleDAO_.ToProtoEntity(bundle));
+            }
+            return response;
+        }
+
+        protected override async Task<PrepareUploadResponse> safePrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+            ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
+
+            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            if (null == bundle)
+            {
+                return new PrepareUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            string filepath = String.Format("{0}/{1}", bundle.Name, _request.Filepath);
+
+            var response = new PrepareUploadResponse()
+            {
+                Status = new LIB.Proto.Status(),
+            };
+
+            response.Filepath = _request.Filepath;
+            // 有效期1小时
+            response.Url = await minioClient_.PresignedPutObject(filepath, 60 * 60);
+            return response;
+        }
+
+        protected override async Task<FlushUploadResponse> safeFlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+            ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
+
+            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            if (null == bundle)
+            {
+                return new FlushUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            string filepath = String.Format("{0}/{1}", bundle.Name, _request.Filepath);
+            var result = await minioClient_.StateObject(filepath);
+            var url = await minioClient_.GetAddressUrl(filepath);
+
+            List<AssetSubEntity> assets = new List<AssetSubEntity>(bundle.Assets);
+            var asset = assets.Find((_item) =>
+            {
+                return _item.Path.Equals(_request.Filepath);
+            });
+            if (null == asset)
+            {
+                asset = new AssetSubEntity();
+                asset.Path = _request.Filepath;
+                asset.Hash = result.Key;
+                asset.Size = result.Value;
+                assets.Add(asset);
+                bundle.Assets = assets.ToArray();
+                await bundleDAO_.UpdateAsync(_request.Uuid, bundle);
+            }
+
+            return new FlushUploadResponse()
+            {
+                Status = new LIB.Proto.Status(),
+                Filepath = _request.Filepath,
+                Hash = result.Key,
+                Size = result.Value,
+                Url = url,
+            };
+        }
+
+        protected override async Task<BundleFetchAssetsResponse> safeFetchAssets(UuidRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+
+            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            if (null == bundle)
+            {
+                return new BundleFetchAssetsResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            var response = new BundleFetchAssetsResponse()
+            {
+                Status = new LIB.Proto.Status(),
+                Uuid = bundle.Uuid.ToString(),
+            };
+            foreach (var asset in bundle.Assets)
+            {
+                response.Assets.Add(new LIB.Proto.AssetSubEntity
+                {
+                    Path = asset.Path,
+                    Hash = asset.Hash,
+                    Size = asset.Size,
+                });
             }
             return response;
         }

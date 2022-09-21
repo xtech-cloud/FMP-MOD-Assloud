@@ -79,6 +79,33 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             getController()?.UpdateProtoSearch(status_ as BundleModel.BundleStatus, _response, _context);
         }
 
+        /// <summary>
+        /// 更新PrepareUpload的数据
+        /// </summary>
+        /// <param name="_response">PrepareUpload的回复</param>
+        public virtual void UpdateProtoPrepareUpload(PrepareUploadResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoPrepareUpload(status_ as BundleModel.BundleStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新FlushUpload的数据
+        /// </summary>
+        /// <param name="_response">FlushUpload的回复</param>
+        public virtual void UpdateProtoFlushUpload(FlushUploadResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoFlushUpload(status_ as BundleModel.BundleStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新FetchAssets的数据
+        /// </summary>
+        /// <param name="_response">FetchAssets的回复</param>
+        public virtual void UpdateProtoFetchAssets(BundleFetchAssetsResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoFetchAssets(status_ as BundleModel.BundleStatus, _response, _context);
+        }
+
 
         /// <summary>
         /// 获取直系控制层

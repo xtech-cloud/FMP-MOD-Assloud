@@ -9,6 +9,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         public string Summary { get; set; } = "";
         public string[] Labels { get; set; } = new string[0];
         public string[] Tags { get; set; } = new string[0];
+        public AssetSubEntity[] Assets { get; set; } = new AssetSubEntity[0];
         public Dictionary<string, string> Summary_i18n { get; set; } = new Dictionary<string, string>();
     }
 }

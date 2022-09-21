@@ -20,6 +20,12 @@ service Bundle
     rpc List(BundleListRequest) returns (BundleListResponse) {}
     // 搜索
     rpc Search(BundleSearchRequest) returns (BundleListResponse) {}
+    // 准备上传
+    rpc PrepareUpload(PrepareUploadRequest) returns (PrepareUploadResponse) {}
+    // 完成上传
+    rpc FlushUpload(FlushUploadRequest) returns (FlushUploadResponse) {}
+    // 获取资源列表
+    rpc FetchAssets(UuidRequest) returns (BundleFetchAssetsResponse) {}
 }
 
 message BundleCreateRequest
@@ -65,4 +71,11 @@ message BundleSearchRequest
     string name = 3;  // 名称
     repeated string labels = 4;  // 预设标签
     repeated string tags = 5;  // 自定义标签
+}
+
+message BundleFetchAssetsResponse
+{
+    Status status = 1;  // 状态
+    string uuid = 2; // 包的UUID
+    repeated AssetSubEntity assets = 3;  // 资源的列表
 }

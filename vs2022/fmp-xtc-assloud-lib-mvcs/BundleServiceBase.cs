@@ -236,6 +236,105 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             return Error.OK;
         }
 
+        /// <summary>
+        /// 调用PrepareUpload
+        /// </summary>
+        /// <param name="_request">PrepareUpload的请求</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> CallPrepareUpload(PrepareUploadRequest? _request, object? _context)
+        {
+            getLogger()?.Trace("Call PrepareUpload ...");
+            if (null == _request)
+            {
+                return Error.NewNullErr("parameter:_request is null");
+            }
+
+            PrepareUploadResponse? response = null;
+            if (null != mock.CallPrepareUploadDelegate)
+            {
+                getLogger()?.Trace("use mock ...");
+                response = await mock.CallPrepareUploadDelegate(_request);
+            }
+            else
+            {
+                var client = getGrpcClient();
+                if (null == client)
+                {
+                    return await Task.FromResult(Error.NewNullErr("client is null"));
+                }
+                response = await client.PrepareUploadAsync(_request);
+            }
+
+            getModel()?.UpdateProtoPrepareUpload(response, _context);
+            return Error.OK;
+        }
+
+        /// <summary>
+        /// 调用FlushUpload
+        /// </summary>
+        /// <param name="_request">FlushUpload的请求</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> CallFlushUpload(FlushUploadRequest? _request, object? _context)
+        {
+            getLogger()?.Trace("Call FlushUpload ...");
+            if (null == _request)
+            {
+                return Error.NewNullErr("parameter:_request is null");
+            }
+
+            FlushUploadResponse? response = null;
+            if (null != mock.CallFlushUploadDelegate)
+            {
+                getLogger()?.Trace("use mock ...");
+                response = await mock.CallFlushUploadDelegate(_request);
+            }
+            else
+            {
+                var client = getGrpcClient();
+                if (null == client)
+                {
+                    return await Task.FromResult(Error.NewNullErr("client is null"));
+                }
+                response = await client.FlushUploadAsync(_request);
+            }
+
+            getModel()?.UpdateProtoFlushUpload(response, _context);
+            return Error.OK;
+        }
+
+        /// <summary>
+        /// 调用FetchAssets
+        /// </summary>
+        /// <param name="_request">FetchAssets的请求</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> CallFetchAssets(UuidRequest? _request, object? _context)
+        {
+            getLogger()?.Trace("Call FetchAssets ...");
+            if (null == _request)
+            {
+                return Error.NewNullErr("parameter:_request is null");
+            }
+
+            BundleFetchAssetsResponse? response = null;
+            if (null != mock.CallFetchAssetsDelegate)
+            {
+                getLogger()?.Trace("use mock ...");
+                response = await mock.CallFetchAssetsDelegate(_request);
+            }
+            else
+            {
+                var client = getGrpcClient();
+                if (null == client)
+                {
+                    return await Task.FromResult(Error.NewNullErr("client is null"));
+                }
+                response = await client.FetchAssetsAsync(_request);
+            }
+
+            getModel()?.UpdateProtoFetchAssets(response, _context);
+            return Error.OK;
+        }
+
 
         /// <summary>
         /// 获取直系数据层

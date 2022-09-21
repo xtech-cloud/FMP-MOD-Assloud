@@ -51,5 +51,20 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
             throw new NotImplementedException();
         }
 
+        public virtual void RefreshPrepareUpload(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshFlushUpload(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void RefreshFetchAssets(IDTO _dto, object _context)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

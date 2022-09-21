@@ -18,10 +18,40 @@ public class IntegrationTest : IntegrationTestBase
             throw new Exception(_message);
         }
 
+        public void RefreshCreate(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RefreshDelete(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RefreshList(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RefreshMatch(IDTO _dto, object? _context)
         {
             var dto = _dto as ContentListResponseDTO;
             Assert.NotEmpty(dto?.Value.Contents);
+        }
+
+        public void RefreshRetrieve(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RefreshSearch(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RefreshUpdate(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
         }
     }
 

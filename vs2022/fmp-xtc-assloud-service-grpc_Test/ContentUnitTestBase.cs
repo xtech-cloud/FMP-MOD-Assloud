@@ -17,6 +17,24 @@ public abstract class ContentUnitTestBase : IClassFixture<TestFixture>
 
 
     [Fact]
+    public abstract Task CreateTest();
+
+    [Fact]
+    public abstract Task UpdateTest();
+
+    [Fact]
+    public abstract Task RetrieveTest();
+
+    [Fact]
+    public abstract Task DeleteTest();
+
+    [Fact]
+    public abstract Task ListTest();
+
+    [Fact]
+    public abstract Task SearchTest();
+
+    [Fact]
     public abstract Task MatchTest();
 
 }

@@ -34,4 +34,13 @@ public abstract class BundleUnitTestBase : IClassFixture<TestFixture>
     [Fact]
     public abstract Task SearchTest();
 
+    [Fact]
+    public abstract Task PrepareUploadTest();
+
+    [Fact]
+    public abstract Task FlushUploadTest();
+
+    [Fact]
+    public abstract Task FetchAssetsTest();
+
 }

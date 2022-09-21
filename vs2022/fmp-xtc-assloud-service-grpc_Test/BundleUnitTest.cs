@@ -85,7 +85,7 @@ public class BundleTest : BundleUnitTestBase
         string uuid = "";
         {
             var request = new BundleCreateRequest();
-            request.Name = "cloud.xtech.test.update";
+            request.Name = "cloud.xtech.test.retrieve";
             var response = await fixture_.getServiceBundle().Create(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
 
@@ -221,4 +221,18 @@ public class BundleTest : BundleUnitTestBase
         }
     }
 
+    public override Task PrepareUploadTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task FlushUploadTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task FetchAssetsTest()
+    {
+        throw new NotImplementedException();
+    }
 }

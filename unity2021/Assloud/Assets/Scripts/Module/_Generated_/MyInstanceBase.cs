@@ -331,6 +331,195 @@ namespace XTC.FMP.MOD.Assloud.LIB.Unity
             });
         }
 
+        protected virtual void submitBundlePrepareUpload(PrepareUploadRequest _request)
+        {
+            var dto = new PrepareUploadRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnPrepareUploadSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleFlushUpload(FlushUploadRequest _request)
+        {
+            var dto = new FlushUploadRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnFlushUploadSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitBundleFetchAssets(UuidRequest _request)
+        {
+            var dto = new UuidRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeBundle.OnFetchAssetsSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitContentCreate(ContentCreateRequest _request)
+        {
+            var dto = new ContentCreateRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeContent.OnCreateSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitContentUpdate(ContentUpdateRequest _request)
+        {
+            var dto = new ContentUpdateRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeContent.OnUpdateSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitContentRetrieve(UuidRequest _request)
+        {
+            var dto = new UuidRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeContent.OnRetrieveSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitContentDelete(UuidRequest _request)
+        {
+            var dto = new UuidRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeContent.OnDeleteSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitContentList(ContentListRequest _request)
+        {
+            var dto = new ContentListRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeContent.OnListSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
+        protected virtual void submitContentSearch(ContentSearchRequest _request)
+        {
+            var dto = new ContentSearchRequestDTO(_request);
+            SynchronizationContext context = SynchronizationContext.Current;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var reslut = await viewBridgeContent.OnSearchSubmit(dto, context);
+                    if (!LibMVCS.Error.IsOK(reslut))
+                    {
+                        logger_.Error(reslut.getMessage());
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    logger_.Exception(ex);
+                }
+            });
+        }
+
         protected virtual void submitContentMatch(ContentMatchRequest _request)
         {
             var dto = new ContentMatchRequestDTO(_request);

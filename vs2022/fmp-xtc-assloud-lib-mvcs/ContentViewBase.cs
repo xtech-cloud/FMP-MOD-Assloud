@@ -26,6 +26,102 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
         /// <summary>
+        /// 刷新Create的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">UuidResponse的数据传输对象</param>
+        public virtual void RefreshProtoCreate(Error _err, UuidResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_Create_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshCreate(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新Update的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">UuidResponse的数据传输对象</param>
+        public virtual void RefreshProtoUpdate(Error _err, UuidResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_Update_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshUpdate(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新Retrieve的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">ContentRetrieveResponse的数据传输对象</param>
+        public virtual void RefreshProtoRetrieve(Error _err, ContentRetrieveResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_Retrieve_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshRetrieve(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新Delete的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">UuidResponse的数据传输对象</param>
+        public virtual void RefreshProtoDelete(Error _err, UuidResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_Delete_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshDelete(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新List的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">ContentListResponse的数据传输对象</param>
+        public virtual void RefreshProtoList(Error _err, ContentListResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_List_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshList(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新Search的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">ContentListResponse的数据传输对象</param>
+        public virtual void RefreshProtoSearch(Error _err, ContentListResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IContentUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_Search_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshSearch(_dto, _context);
+        }
+
+        /// <summary>
         /// 刷新Match的数据
         /// </summary>
         /// <param name="_err">错误</param>

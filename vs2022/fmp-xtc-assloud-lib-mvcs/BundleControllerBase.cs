@@ -97,6 +97,42 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             getView()?.RefreshProtoSearch(err, dto, _context);
         }
 
+        /// <summary>
+        /// 更新PrepareUpload的数据
+        /// </summary>
+        /// <param name="_status">直系状态</param>
+        /// <param name="_response">PrepareUpload的回复</param>
+        public virtual void UpdateProtoPrepareUpload(BundleModel.BundleStatus? _status, PrepareUploadResponse _response, object? _context)
+        {
+            Error err = new Error(_response.Status.Code, _response.Status.Message);
+            PrepareUploadResponseDTO? dto = new PrepareUploadResponseDTO(_response);
+            getView()?.RefreshProtoPrepareUpload(err, dto, _context);
+        }
+
+        /// <summary>
+        /// 更新FlushUpload的数据
+        /// </summary>
+        /// <param name="_status">直系状态</param>
+        /// <param name="_response">FlushUpload的回复</param>
+        public virtual void UpdateProtoFlushUpload(BundleModel.BundleStatus? _status, FlushUploadResponse _response, object? _context)
+        {
+            Error err = new Error(_response.Status.Code, _response.Status.Message);
+            FlushUploadResponseDTO? dto = new FlushUploadResponseDTO(_response);
+            getView()?.RefreshProtoFlushUpload(err, dto, _context);
+        }
+
+        /// <summary>
+        /// 更新FetchAssets的数据
+        /// </summary>
+        /// <param name="_status">直系状态</param>
+        /// <param name="_response">FetchAssets的回复</param>
+        public virtual void UpdateProtoFetchAssets(BundleModel.BundleStatus? _status, BundleFetchAssetsResponse _response, object? _context)
+        {
+            Error err = new Error(_response.Status.Code, _response.Status.Message);
+            BundleFetchAssetsResponseDTO? dto = new BundleFetchAssetsResponseDTO(_response);
+            getView()?.RefreshProtoFetchAssets(err, dto, _context);
+        }
+
 
         /// <summary>
         /// 获取直系视图层

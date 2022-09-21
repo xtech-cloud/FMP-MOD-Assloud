@@ -75,13 +75,57 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
 
-    public class ContentMatchRequestDTO : IDTO
+    public class BundleFetchAssetsResponseDTO : IDTO
     {
-        public ContentMatchRequestDTO(ContentMatchRequest _value)
+        public BundleFetchAssetsResponseDTO(BundleFetchAssetsResponse _value)
         {
             Value = _value;    
         }
-        public readonly ContentMatchRequest Value;
+        public readonly BundleFetchAssetsResponse Value;
+    }
+
+
+
+    public class ContentCreateRequestDTO : IDTO
+    {
+        public ContentCreateRequestDTO(ContentCreateRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly ContentCreateRequest Value;
+    }
+
+
+
+    public class ContentUpdateRequestDTO : IDTO
+    {
+        public ContentUpdateRequestDTO(ContentUpdateRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly ContentUpdateRequest Value;
+    }
+
+
+
+    public class ContentRetrieveResponseDTO : IDTO
+    {
+        public ContentRetrieveResponseDTO(ContentRetrieveResponse _value)
+        {
+            Value = _value;    
+        }
+        public readonly ContentRetrieveResponse Value;
+    }
+
+
+
+    public class ContentListRequestDTO : IDTO
+    {
+        public ContentListRequestDTO(ContentListRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly ContentListRequest Value;
     }
 
 
@@ -93,6 +137,28 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             Value = _value;    
         }
         public readonly ContentListResponse Value;
+    }
+
+
+
+    public class ContentSearchRequestDTO : IDTO
+    {
+        public ContentSearchRequestDTO(ContentSearchRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly ContentSearchRequest Value;
+    }
+
+
+
+    public class ContentMatchRequestDTO : IDTO
+    {
+        public ContentMatchRequestDTO(ContentMatchRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly ContentMatchRequest Value;
     }
 
 
@@ -240,13 +306,57 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
 
-    public class MetaEntityDTO : IDTO
+    public class PrepareUploadRequestDTO : IDTO
     {
-        public MetaEntityDTO(MetaEntity _value)
+        public PrepareUploadRequestDTO(PrepareUploadRequest _value)
         {
             Value = _value;    
         }
-        public readonly MetaEntity Value;
+        public readonly PrepareUploadRequest Value;
+    }
+
+
+
+    public class PrepareUploadResponseDTO : IDTO
+    {
+        public PrepareUploadResponseDTO(PrepareUploadResponse _value)
+        {
+            Value = _value;    
+        }
+        public readonly PrepareUploadResponse Value;
+    }
+
+
+
+    public class FlushUploadRequestDTO : IDTO
+    {
+        public FlushUploadRequestDTO(FlushUploadRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly FlushUploadRequest Value;
+    }
+
+
+
+    public class FlushUploadResponseDTO : IDTO
+    {
+        public FlushUploadResponseDTO(FlushUploadResponse _value)
+        {
+            Value = _value;    
+        }
+        public readonly FlushUploadResponse Value;
+    }
+
+
+
+    public class AssetSubEntityDTO : IDTO
+    {
+        public AssetSubEntityDTO(AssetSubEntity _value)
+        {
+            Value = _value;    
+        }
+        public readonly AssetSubEntity Value;
     }
 
 

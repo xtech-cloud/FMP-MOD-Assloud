@@ -22,6 +22,42 @@ namespace XTC.FMP.MOD.Assloud.LIB.Bridge
         void Alert(string _code, string _message, object? _context);
 
         /// <summary>
+        /// 刷新Create的数据
+        /// </summary>
+        void RefreshCreate(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新Update的数据
+        /// </summary>
+        void RefreshUpdate(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新Retrieve的数据
+        /// </summary>
+        void RefreshRetrieve(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新Delete的数据
+        /// </summary>
+        void RefreshDelete(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新List的数据
+        /// </summary>
+        void RefreshList(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 刷新Search的数据
+        /// </summary>
+        void RefreshSearch(IDTO _dto, object? _context);
+
+
+        /// <summary>
         /// 刷新Match的数据
         /// </summary>
         void RefreshMatch(IDTO _dto, object? _context);

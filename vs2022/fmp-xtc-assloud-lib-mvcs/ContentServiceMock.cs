@@ -15,6 +15,18 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
     {
 
 
+        public System.Func<ContentCreateRequest, Task<UuidResponse>>? CallCreateDelegate { get; set; } = null;
+
+        public System.Func<ContentUpdateRequest, Task<UuidResponse>>? CallUpdateDelegate { get; set; } = null;
+
+        public System.Func<UuidRequest, Task<ContentRetrieveResponse>>? CallRetrieveDelegate { get; set; } = null;
+
+        public System.Func<UuidRequest, Task<UuidResponse>>? CallDeleteDelegate { get; set; } = null;
+
+        public System.Func<ContentListRequest, Task<ContentListResponse>>? CallListDelegate { get; set; } = null;
+
+        public System.Func<ContentSearchRequest, Task<ContentListResponse>>? CallSearchDelegate { get; set; } = null;
+
         public System.Func<ContentMatchRequest, Task<ContentListResponse>>? CallMatchDelegate { get; set; } = null;
 
     }

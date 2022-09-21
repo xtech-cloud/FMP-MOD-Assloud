@@ -68,17 +68,19 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                     }
 
                     ContentEntity content = new ContentEntity();
-                    content.Path = _dir;
-                    content.Bundle = bundle_name;
+                    //content.Path = _dir;
+                    content.BundleUuid = bundle_name;
                     content.Name = content_name;
                     try
                     {
                         string json = File.ReadAllText(meta_file);
+                        /*
                         var meta = JsonConvert.DeserializeObject<MetaEntity>(json);
                         content.Meta = meta;
                         if (null == content.Meta)
                             throw new NullReferenceException("meta is null");
                         contentsMap_[content.Meta.Uri] = content;
+                        */
                     }
                     catch (System.Exception ex)
                     {
