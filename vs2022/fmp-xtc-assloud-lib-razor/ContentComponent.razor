@@ -82,25 +82,25 @@
             <CardTabs>
                 <Tabs>
                     <TabPane Tab="基本信息" Key="1">
-                        <Descriptions Bordered>
-                            <DescriptionsItem Title="别名" Span="4">@selectedModel?.Alias</DescriptionsItem>
-                            <DescriptionsItem Title="主标题" Span="4">@selectedModel?.Title</DescriptionsItem>
-                            <DescriptionsItem Title="副标题" Span="4">@selectedModel?.Caption</DescriptionsItem>
-                            <DescriptionsItem Title="标签" Span="4">@selectedModel?.Label</DescriptionsItem>
-                            <DescriptionsItem Title="标语" Span="4">@selectedModel?.Topic</DescriptionsItem>
-                            <DescriptionsItem Title="描述" Span="4">
+                        <Descriptions Bordered Column="DescriptionsColumns" Class="description-fixed-title">
+                            <DescriptionsItem Title="别名">@selectedModel?.Alias</DescriptionsItem>
+                            <DescriptionsItem Title="主标题">@selectedModel?.Title</DescriptionsItem>
+                            <DescriptionsItem Title="副标题">@selectedModel?.Caption</DescriptionsItem>
+                            <DescriptionsItem Title="标签">@selectedModel?.Label</DescriptionsItem>
+                            <DescriptionsItem Title="标语">@selectedModel?.Topic</DescriptionsItem>
+                            <DescriptionsItem Title="描述">
                                 @foreach (var line in @selectedModel?.Description?.Split("\n") ?? new string[0])
                                 {
                                     <div>@line</div>
                                 }
                             </DescriptionsItem>
-                            <DescriptionsItem Title="预设标签" Span="4">
+                            <DescriptionsItem Title="预设标签">
                                 @foreach (var label in selectedModel?.Labels ?? new List<string>())
                                 {
                                     <Tag PresetColor="@PresetColor.Blue">@label</Tag>
                                 }
                             </DescriptionsItem>
-                            <DescriptionsItem Title="自定义标签" Span="4">
+                            <DescriptionsItem Title="自定义标签">
                                 @foreach (var tag in selectedModel?.Tags ?? new List<string>())
                                 {
                                     <Tag PresetColor="@PresetColor.Green">@tag</Tag>
@@ -215,8 +215,21 @@
         margin-right: 64px;
         margin-bottom: 24px;
     }
+
+    .description-fixed-title 
+    .ant-descriptions-item-label {
+        width: 150px;
+    }
 </style>
 
 @code {
+    private Dictionary<string, int> DescriptionsColumns = new Dictionary<string, int> {
+            { "xxl", 1 },
+            { "xl", 1},
+            { "lg", 1},
+            { "md", 1},
+            { "sm", 1},
+            { "xs", 1}
+        };
 }
 

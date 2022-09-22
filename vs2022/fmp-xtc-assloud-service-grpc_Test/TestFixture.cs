@@ -18,7 +18,7 @@ public class TestFixture : TestFixtureBase
 
     protected override void newBundleService()
     {
-        serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()), new ContentDAO(new DatabaseOptions()));
+        serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()), new ContentDAO(new DatabaseOptions()), new MinIOClient(new MinIOOptions()));
     }
 
     protected override void newContentService()
