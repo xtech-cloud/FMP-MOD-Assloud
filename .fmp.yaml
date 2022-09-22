@@ -8,9 +8,9 @@ generate:
 publish:
   active: true
   environment: develop
-  repository: grpc://nps.meex.cloud:28000
+  repository: grpc://api.xtech.cloud:28000
 deploy:
   active: true
   environment: develop
-  repository: grpc://nps.meex.cloud:28000
+  repository: grpc://api.xtech.cloud:28000
   agent_port: 28001

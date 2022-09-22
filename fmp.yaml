@@ -8,9 +8,9 @@ generate:
 publish:
   active: true
   environment: product
-  repository: grpc://localhost:28000
+  repository: grpc://api.xtech.cloud:28000
 deploy:
   active: true
   environment: product
-  repository: grpc://localhost:28000
+  repository: grpc://api.xtech.cloud:28000
   agent_port: 28001
