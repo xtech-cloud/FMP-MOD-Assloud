@@ -479,7 +479,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             req.Count = tablePageSize;
             req.BundleUuid = bundle_uuid;
             var dto = new ContentListRequestDTO(req);
-            Error err = await bridge.OnListSubmit(dto, SynchronizationContext.Current);
+            Error err = await bridge.OnListSubmit(dto, null);
             if (!Error.IsOK(err))
             {
                 logger_?.Error(err.getMessage());

@@ -451,7 +451,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             req.Offset = (tablePageIndex - 1) * tablePageSize;
             req.Count = tablePageSize;
             var dto = new BundleListRequestDTO(req);
-            Error err = await bridge.OnListSubmit(dto, SynchronizationContext.Current);
+            Error err = await bridge.OnListSubmit(dto, null);
             if (!Error.IsOK(err))
             {
                 logger_?.Error(err.getMessage());
