@@ -1,16 +1,16 @@
 org_name: XTC
 module_name: Assloud
 generate:
-  active: true
+  active: false
   database_driver: mongodb
   debug: false
-  unity_solution: true
+  unity_solution: false
 publish:
   active: true
   environment: product
-  repository: grpc://api.xtech.cloud:28000
+  repository: grpcs://api.xtech.cloud:29000
 deploy:
   active: true
   environment: product
-  repository: grpc://api.xtech.cloud:28000
+  repository: grpcs://api.xtech.cloud:29000
   agent_port: 28001
