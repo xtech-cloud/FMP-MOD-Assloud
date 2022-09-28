@@ -2,6 +2,7 @@
 
 @using System.ComponentModel
 @using AntDesign.TableModels
+@using XTC.FMP.MOD.Assloud.LIB.MVCS
 
 <Card>
     <Form @ref="searchForm"
@@ -39,7 +40,10 @@
             @if (!string.IsNullOrEmpty(bundle_uuid))
             {
                 <div style="display:flex; margin-bottom:24px;">
-                    <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" OnClick="@onCreateClick">创建</Button>
+                    @if (permissionS_.ContainsKey(Permissions.ContentCreate))
+                    {
+                        <Button Type="@ButtonType.Primary" Icon="@IconType.Outline.Plus" OnClick="@onCreateClick">创建</Button>
+                    }
                 </div>
             }
             <Table TItem="TableModel" DataSource="@tableModel" Total="@tableTotal" PageIndex="tablePageIndex" PageSize="tablePageSize" OnPageIndexChange="onPageIndexChanged" OnRowClick="onTableRowClick">
@@ -60,18 +64,24 @@
                 </PropertyColumn>
                 <ActionColumn Title="操作" Fixed="right" Width="150">
                     <Space Size=@("middle")>
-                        <SpaceItem>
-                            <Button Size="small" OnClick="()=>onUpdateClick(context.Uuid)">修改</Button>
-                        </SpaceItem>
-                        <SpaceItem>
-                            <Popconfirm Title="确定要删除这个包吗?"
+                        @if (permissionS_.ContainsKey(Permissions.ContentUpdate))
+                        {
+                            <SpaceItem>
+                                <Button Size="small" OnClick="()=>onUpdateClick(context.Uuid)">修改</Button>
+                            </SpaceItem>
+                        }
+                        @if (permissionS_.ContainsKey(Permissions.ContentDelete))
+                        {
+                            <SpaceItem>
+                                <Popconfirm Title="确定要删除这个包吗?"
                                         OnConfirm="@(()=>onConfirmDelete(context.Uuid))"
                                         OnCancel="onCancelDelete"
                                         OkText="确定"
                                         CancelText="取消">
-                                <Button Danger Size="small">删除</Button>
-                            </Popconfirm>
-                        </SpaceItem>
+                                    <Button Danger Size="small">删除</Button>
+                                </Popconfirm>
+                            </SpaceItem>
+                        }
                     </Space>
                 </ActionColumn>
             </Table>
@@ -216,7 +226,7 @@
         margin-bottom: 24px;
     }
 
-    .description-fixed-title 
+    .description-fixed-title
     .ant-descriptions-item-label {
         width: 150px;
     }
