@@ -186,7 +186,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 return new PrepareUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            string filepath = String.Format("{0}/{1}", bundle.Name, _request.Filepath);
+            string filepath = String.Format("{0}/_resources/{1}", bundle.Name, _request.Filepath);
 
             var response = new PrepareUploadResponse()
             {
@@ -210,25 +210,25 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 return new FlushUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            string filepath = String.Format("{0}/{1}", bundle.Name, _request.Filepath);
+            string filepath = String.Format("{0}/_resources/{1}", bundle.Name, _request.Filepath);
             var result = await minioClient_.StateObject(filepath);
-            var url = await minioClient_.GetAddressUrl(filepath);
+            var url = minioClient_.GetAddressUrl(filepath);
 
-            List<AssetSubEntity> assets = new List<AssetSubEntity>(bundle.Assets);
-            var asset = assets.Find((_item) =>
+            List<FileSubEntity> resourceS = new List<FileSubEntity>(bundle.Resources);
+            var resource = resourceS.Find((_item) =>
             {
                 return _item.Path.Equals(_request.Filepath);
             });
-            if (null == asset)
+            if (null == resource)
             {
-                asset = new AssetSubEntity();
-                asset.Path = _request.Filepath;
-                asset.Hash = result.Key;
-                asset.Size = result.Value;
-                assets.Add(asset);
-                bundle.Assets = assets.ToArray();
-                await bundleDAO_.UpdateAsync(_request.Uuid, bundle);
+                resource = new FileSubEntity();
+                resourceS.Add(resource);
             }
+            resource.Path = _request.Filepath;
+            resource.Hash = result.Key;
+            resource.Size = result.Value;
+            bundle.Resources = resourceS.ToArray();
+            await bundleDAO_.UpdateAsync(_request.Uuid, bundle);
 
             return new FlushUploadResponse()
             {
@@ -240,28 +240,28 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             };
         }
 
-        protected override async Task<BundleFetchAssetsResponse> safeFetchAssets(UuidRequest _request, ServerCallContext _context)
+        protected override async Task<BundleFetchResourcesResponse> safeFetchResources(UuidRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
             var bundle = await bundleDAO_.GetAsync(_request.Uuid);
             if (null == bundle)
             {
-                return new BundleFetchAssetsResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+                return new BundleFetchResourcesResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            var response = new BundleFetchAssetsResponse()
+            var response = new BundleFetchResourcesResponse()
             {
                 Status = new LIB.Proto.Status(),
                 Uuid = bundle.Uuid.ToString(),
             };
-            foreach (var asset in bundle.Assets)
+            foreach (var resource in bundle.Resources)
             {
-                response.Assets.Add(new LIB.Proto.AssetSubEntity
+                response.Resources.Add(new LIB.Proto.FileSubEntity
                 {
-                    Path = asset.Path,
-                    Hash = asset.Hash,
-                    Size = asset.Size,
+                    Path = resource.Path,
+                    Hash = resource.Hash,
+                    Size = resource.Size,
                 });
             }
             return response;

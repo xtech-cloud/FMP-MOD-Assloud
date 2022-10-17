@@ -231,7 +231,7 @@ public class BundleTest : BundleUnitTestBase
         throw new NotImplementedException();
     }
 
-    public override Task FetchAssetsTest()
+    public override Task FetchResourcesTest()
     {
         throw new NotImplementedException();
     }

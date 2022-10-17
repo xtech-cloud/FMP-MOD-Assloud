@@ -78,13 +78,16 @@ message FlushUploadResponse {
     string url  = 5;  // 访问地址
 }
 
-message AssetSubEntity
+// 文件子实体
+message FileSubEntity
 {
     string path = 1;  // 路径
     string hash = 2;  // 哈希值
     uint64 size = 3; // 大小
+    string url = 4;  // 外部访问地址
 }
 
+// 内容实体
 message ContentEntity
 {
     string uuid = 1; // 内容的uuid
@@ -110,6 +113,7 @@ message ContentEntity
     string bundle_name = 1001;  // 包的名称
 }
 
+// 包实体
 message BundleEntity
 {
     string uuid = 1; // 包的uuid

@@ -28,6 +28,16 @@ public class IntegrationTest : IntegrationTestBase
             throw new NotImplementedException();
         }
 
+        public void RefreshFetchAttachments(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RefreshFlushUpload(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RefreshList(IDTO _dto, object? _context)
         {
             throw new NotImplementedException();
@@ -37,6 +47,11 @@ public class IntegrationTest : IntegrationTestBase
         {
             var dto = _dto as ContentListResponseDTO;
             Assert.NotEmpty(dto?.Value.Contents);
+        }
+
+        public void RefreshPrepareUpload(IDTO _dto, object? _context)
+        {
+            throw new NotImplementedException();
         }
 
         public void RefreshRetrieve(IDTO _dto, object? _context)

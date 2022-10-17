@@ -22,6 +22,12 @@ service Content
     rpc Search(ContentSearchRequest) returns (ContentListResponse) {}
     // 匹配
     rpc Match(ContentMatchRequest) returns (ContentListResponse) { }
+    // 准备上传
+    rpc PrepareUpload(PrepareUploadRequest) returns (PrepareUploadResponse) {}
+    // 完成上传
+    rpc FlushUpload(FlushUploadRequest) returns (FlushUploadResponse) {}
+    // 获取附件列表
+    rpc FetchAttachments(UuidRequest) returns (ContentFetchAttachmentsResponse) {}
 }
 
 message ContentCreateRequest
@@ -88,3 +94,10 @@ message ContentMatchRequest
     repeated string patterns = 1; //  匹配模式列表
 }
 
+
+message ContentFetchAttachmentsResponse
+{
+    Status status = 1;  // 状态
+    string uuid = 2; // 包的UUID
+    repeated FileSubEntity attachments = 10;  // 附件的列表
+}

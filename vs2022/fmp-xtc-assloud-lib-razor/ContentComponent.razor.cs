@@ -7,13 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel;
 using AntDesign;
-using static XTC.FMP.MOD.Assloud.LIB.Razor.ContentComponent;
-using XTC.FMP.MOD.Assloud.LIB.Bridge;
-using XTC.FMP.MOD.Assloud.LIB.MVCS;
-using XTC.FMP.MOD.Assloud.LIB.Proto;
-using System;
 using AntDesign.TableModels;
-using System.Net.WebSockets;
+using Newtonsoft.Json;
 
 namespace XTC.FMP.MOD.Assloud.LIB.Razor
 {
@@ -77,7 +72,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                     return;
                 razor_.tableModel.RemoveAll((_item) =>
                 {
-                    return _item.Uuid?.Equals(dto.Value.Uuid) ?? false;
+                    return _item.entity?.Uuid?.Equals(dto.Value.Uuid) ?? false;
                 });
                 razor_.selectedModel = null;
             }
@@ -92,30 +87,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 razor_.tableModel.Clear();
                 foreach (var content in dto.Value.Contents)
                 {
-                    var item = new TableModel
-                    {
-                        Uuid = content.Uuid,
-                        Name = content.Name,
-                        Alias = content.Alias,
-                        Title = content.Title,
-                        Caption = content.Caption,
-                        Label = content.Label,
-                        Topic = content.Topic,
-                        Description = content.Description,
-                        Bundle = content.BundleName,
-                    };
-                    foreach (var label in content.Labels)
-                    {
-                        item.Labels.Add(label);
-                    }
-                    foreach (var tag in content.Tags)
-                    {
-                        item.Tags.Add(tag);
-                    }
-                    foreach (var pair in content.Kv)
-                    {
-                        item.KV.Add(pair.Key, pair.Value);
-                    }
+                    var item = new TableModel(content);
                     razor_.tableModel.Add(item);
                 }
                 razor_.selectedModel = null;
@@ -131,6 +103,43 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             public void RefreshMatch(IDTO _dto, object? _context)
             {
                 throw new NotImplementedException();
+            }
+
+            public void RefreshPrepareUpload(IDTO _dto, object? _context)
+            {
+                var dto = _dto as PrepareUploadResponseDTO;
+                if (null == dto)
+                    return;
+
+                Task.Run(async () => await razor_.upload(dto.Value.Filepath, dto.Value.Url));
+            }
+
+            public void RefreshFlushUpload(IDTO _dto, object? _context)
+            {
+                var dto = _dto as FlushUploadResponseDTO;
+                var file = razor_.uploadFiles_.Find((_item) =>
+                {
+                    return _item.browserFile.Name.Equals(dto.Value.Filepath);
+                });
+                if (null == file)
+                    return;
+                file.percentage = 100;
+                razor_.uploadFiles_.Remove(file);
+                razor_.StateHasChanged();
+                Task.Run(async () => await razor_.fetchAttachments());
+            }
+
+            public void RefreshFetchAttachments(IDTO _dto, object? _context)
+            {
+                var dto = _dto as ContentFetchAttachmentsResponseDTO;
+                var item = razor_.tableModel.Find((_item) =>
+                {
+                    return _item.entity.Uuid?.Equals(dto?.Value.Uuid) ?? false;
+                });
+                if (null == item)
+                    return;
+                item._attachments = dto?.Value.Attachments.ToArray() ?? new FileSubEntity[0];
+                razor_.StateHasChanged();
             }
 
             private ContentComponent razor_;
@@ -169,7 +178,30 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             await listAll();
         }
 
-        private void onTableRowClick(RowData<TableModel> _data)
+        private async Task fetchAttachments()
+        {
+            if (null == selectedModel)
+                return;
+
+            var bridge = (getFacade()?.getViewBridge() as IContentViewBridge);
+            if (null == bridge)
+            {
+                logger_?.Error("bridge is null");
+                return;
+            }
+            var req = new UuidRequest();
+            req.Uuid = selectedModel?.entity.Uuid;
+            var dto = new UuidRequestDTO(req);
+            Error err = await bridge.OnFetchAttachmentsSubmit(dto, null);
+
+            if (!Error.IsOK(err))
+            {
+                logger_?.Error(err.getMessage());
+            }
+        }
+
+
+        private async Task onTableRowClick(RowData<TableModel> _data)
         {
             var item = _data.Data;
             if (null == item)
@@ -179,6 +211,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
 
             selectedModel = item;
+            await fetchAttachments();
         }
 
         #region Search
@@ -291,37 +324,42 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
         #region Update Modal
         private class UpdateModel
         {
-            public class Pair
+            public UpdateModel(ContentEntity _entity)
+            {
+                this.entity = _entity;
+                _Labels = "";
+                foreach (var label in _entity.Labels)
+                    _Labels += label + ";";
+                _Tags = "";
+                foreach (var tag in _entity.Tags)
+                    _Tags += tag + ";";
+                foreach (var pair in _entity.Kv)
+                {
+                    _InputKeyValuePair.Add(new InputKeyValuePair()
+                    {
+                        Key = pair.Key,
+                        Value = pair.Value
+                    });
+                }
+            }
+
+            public class InputKeyValuePair
             {
                 public string Key { get; set; } = "";
                 public string Value { get; set; } = "";
             }
 
-            public string? Uuid { get; set; }
+            public ContentEntity entity { get; private set; }
 
-            [Required]
-            public string? Name { get; set; }
-
-            [Required]
-            public string? Alias { get; set; }
-
-            public List<Pair> KV { get; set; } = new List<Pair>();
-
-            [Required]
-            public string? Title { get; set; }
-            public string? Caption { get; set; }
-            public string? Label { get; set; }
-            public string? Topic { get; set; }
-            public string? Description { get; set; }
-
-            public string? Labels { get; set; }
-            public string? Tags { get; set; }
+            public List<InputKeyValuePair> _InputKeyValuePair { get; set; } = new List<InputKeyValuePair>();
+            public string _Labels { get; set; }
+            public string _Tags { get; set; }
         }
 
         private bool visibleUpdateModal = false;
         private bool updateLoading = false;
         private AntDesign.Internal.IForm? updateForm;
-        private UpdateModel updateModel = new();
+        private UpdateModel? updateModel = null;
 
         private void onUpdateClick(string? _uuid)
         {
@@ -330,37 +368,16 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
 
             var content = tableModel.Find((x) =>
             {
-                if (string.IsNullOrEmpty(x.Uuid))
+                if (string.IsNullOrEmpty(x.entity?.Uuid))
                     return false;
-                return x.Uuid.Equals(_uuid);
+                return x.entity.Uuid.Equals(_uuid);
             });
-            if (null == content)
+            if (null == content || null == content.entity)
                 return;
 
             visibleUpdateModal = true;
-            updateModel.Uuid = _uuid;
-            updateModel.Name = content.Name ?? "";
-            updateModel.Alias = content.Alias ?? "";
-            updateModel.Title = content.Title ?? "";
-            updateModel.Caption = content.Caption ?? "";
-            updateModel.Label = content.Label ?? "";
-            updateModel.Topic = content.Topic ?? "";
-            updateModel.Description = content.Description ?? "";
-            updateModel.KV.Clear();
-            foreach (var pair in content.KV)
-            {
-                updateModel.KV.Add(new UpdateModel.Pair
-                {
-                    Key = pair.Key,
-                    Value = pair.Value,
-                });
-            }
-            updateModel.Labels = "";
-            foreach (var label in content.Labels)
-                updateModel.Labels += label + ";";
-            updateModel.Tags = "";
-            foreach (var tag in content.Tags)
-                updateModel.Tags += tag + ";";
+            var entityClone = Utilities.DeepCloneContentEntity(content.entity);
+            updateModel = new UpdateModel(entityClone);
         }
 
         private void onUpdateModalOk()
@@ -388,16 +405,21 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 logger_?.Error("model is null");
                 return;
             }
+            if (null == model.entity)
+            {
+                logger_?.Error("model.entity is null");
+                return;
+            }
             var req = new ContentUpdateRequest();
-            req.Uuid = model.Uuid;
-            req.Name = model.Name;
-            req.Alias = model.Alias;
-            req.Title = model.Title;
-            req.Caption = model.Caption;
-            req.Label = model.Label;
-            req.Topic = model.Topic;
-            req.Description = model.Description;
-            string[] tags = model.Tags?.Split(";") ?? new string[0];
+            req.Uuid = model.entity.Uuid;
+            req.Name = model.entity.Name;
+            req.Alias = model.entity.Alias;
+            req.Title = model.entity.Title;
+            req.Caption = model.entity.Caption;
+            req.Label = model.entity.Label;
+            req.Topic = model.entity.Topic;
+            req.Description = model.entity.Description;
+            string[] tags = model._Tags?.Split(";") ?? new string[0];
             foreach (var tag in tags)
             {
                 if (string.IsNullOrWhiteSpace(tag))
@@ -405,7 +427,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 req.Tags.Add(tag);
             }
             //req.Labels = "";
-            foreach (var pair in model.KV)
+            foreach (var pair in model._InputKeyValuePair)
             {
                 req.Kv.Add(pair.Key, pair.Value);
             }
@@ -421,42 +443,46 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
         {
             if (null == updateModel)
                 return;
+            if (null == updateModel.entity)
+                return;
+            updateModel._InputKeyValuePair.Add(
+                new UpdateModel.InputKeyValuePair
+                {
+                    Key = String.Format("{0}", updateModel.entity.Kv.Count + 1),
+                    Value = ""
+                }
+            );
+        }
 
-            updateModel.KV.Add(new UpdateModel.Pair
+        private void onDeleteKV(string _key)
+        {
+            if (null == updateModel)
+                return;
+            if (null == updateModel.entity)
+                return;
+            var found = updateModel._InputKeyValuePair.Find((_item) =>
             {
-                Key = string.Format("{0}", updateModel.KV.Count + 1),
-                Value = "",
+                return _item.Key == _key;
             });
+            if (null == found)
+                return;
+            updateModel._InputKeyValuePair.Remove(found);
         }
         #endregion
 
         #region Table
         private class TableModel
         {
-            public string? Uuid { get; set; }
+            public TableModel(ContentEntity _entity)
+            {
+                entity = _entity;
+                _meta = JsonConvert.SerializeObject(_entity, Formatting.Indented);
+            }
 
-            [DisplayName("名称")]
-            public string? Name { get; set; }
-            [DisplayName("别名")]
-            public string? Alias { get; set; }
-            [DisplayName("主标题")]
-            public string? Title { get; set; }
-            [DisplayName("副标题")]
-            public string? Caption { get; set; }
-            [DisplayName("标签")]
-            public string? Label { get; set; }
-            [DisplayName("标语")]
-            public string? Topic { get; set; }
-            [DisplayName("描述")]
-            public string? Description { get; set; }
-            [DisplayName("键值")]
-            public Dictionary<string, string> KV { get; set; } = new Dictionary<string, string>();
-            [DisplayName("预设标签")]
-            public List<string> Labels { get; set; } = new List<string>();
-            [DisplayName("自定义标签")]
-            public List<string> Tags { get; set; } = new List<string>();
-            [DisplayName("包")]
-            public string? Bundle { get; set; }
+            public ContentEntity entity { get; private set; }
+            public string _meta { get; private set; }
+
+            public FileSubEntity[] _attachments { get; set; } = new FileSubEntity[0];
         }
 
 
@@ -517,6 +543,99 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             tablePageIndex = args.Page;
             await listAll();
         }
+        #endregion
+
+        #region Upload
+        public class UploadFile
+        {
+            public UploadFile(IBrowserFile _file)
+            {
+                browserFile = _file;
+            }
+            public string contentUUID = "";
+            public IBrowserFile browserFile { get; private set; }
+            public string uploadUrl = "";
+            public int percentage = 0;
+        }
+
+        private List<UploadFile> uploadFiles_ = new List<UploadFile>();
+
+        private async Task onUploadFilesClick(InputFileChangeEventArgs _e)
+        {
+            uploadFiles_.Clear();
+            if (null == selectedModel)
+                return;
+            var bridge = (getFacade()?.getViewBridge() as IContentViewBridge);
+            if (null == bridge)
+            {
+                logger_?.Error("bridge is null");
+                return;
+            }
+
+            int maxAllowedFiles = 100;
+            foreach (var file in _e.GetMultipleFiles(maxAllowedFiles))
+            {
+                var req = new PrepareUploadRequest();
+                req.Uuid = selectedModel?.entity.Uuid ?? "";
+                req.Filepath = string.Format("{0}", file.Name);
+                var dto = new PrepareUploadRequestDTO(req);
+                Error err = await bridge.OnPrepareUploadSubmit(dto, null);
+                if (!Error.IsOK(err))
+                {
+                    logger_?.Error(err.getMessage());
+                }
+                var uploadFile = new UploadFile(file);
+                uploadFile.contentUUID = selectedModel?.entity.Uuid ?? "";
+                uploadFiles_.Add(uploadFile);
+            }
+        }
+
+        private async Task upload(string _filepath, string _url)
+        {
+            var uploadfile = uploadFiles_.Find((_item) =>
+            {
+                return _item.browserFile.Name.Equals(_filepath);
+            });
+            if (null == uploadfile)
+                return;
+            uploadfile.uploadUrl = _url;
+
+            var httpClient = new HttpClient();
+            bool success = false;
+            try
+            {
+                long maxFileSize = long.MaxValue;
+                var fileContent = new StreamContent(uploadfile.browserFile.OpenReadStream(maxFileSize));
+                var response = await httpClient.PutAsync(new Uri(uploadfile.uploadUrl), fileContent);
+                success = response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                logger_?.Error(ex.Message);
+            }
+
+            if (!success)
+                return;
+
+            var bridge = (getFacade()?.getViewBridge() as IContentViewBridge);
+            if (null == bridge)
+            {
+                logger_?.Error("bridge is null");
+                return;
+            }
+            var req = new FlushUploadRequest();
+            req.Uuid = uploadfile.contentUUID;
+            req.Filepath = uploadfile.browserFile.Name;
+            var dto = new FlushUploadRequestDTO(req);
+            Error err = await bridge.OnFlushUploadSubmit(dto, null);
+            if (!Error.IsOK(err))
+            {
+                logger_?.Error(err.getMessage());
+            }
+
+        }
+
+
         #endregion
     }
 }

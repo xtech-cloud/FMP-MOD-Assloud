@@ -24,5 +24,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
         public string Bundle_Uuid { get; set; } = "";
         public string Bundle_Name { get; set; } = "";
+
+        public FileSubEntity[] Attachments { get; set; } = new FileSubEntity[0];
     }
 }

@@ -129,7 +129,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 var dto = _dto as FlushUploadResponseDTO;
                 var file = razor_.uploadFiles_.Find((_item) =>
                 {
-                    return _item.browserFile.Name.Equals(dto.Value.Filepath.Remove(0, "_assets/".Length));
+                    return _item.browserFile.Name.Equals(dto.Value.Filepath);
                 });
                 if (null == file)
                     return;
@@ -139,16 +139,16 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 Task.Run(async () => await razor_.fetchAssets());
             }
 
-            public void RefreshFetchAssets(IDTO _dto, object? _context)
+            public void RefreshFetchResources(IDTO _dto, object? _context)
             {
-                var dto = _dto as BundleFetchAssetsResponseDTO;
+                var dto = _dto as BundleFetchResourcesResponseDTO;
                 var item = razor_.tableModel.Find((_item) =>
                 {
                     return _item.Uuid?.Equals(dto?.Value.Uuid) ?? false;
                 });
                 if (null == item)
                     return;
-                item.Assets = dto?.Value.Assets.ToArray() ?? new AssetSubEntity[0];
+                item.ResourceS = dto?.Value.Resources.ToArray() ?? new FileSubEntity[0];
                 razor_.StateHasChanged();
             }
 
@@ -192,7 +192,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             var req = new UuidRequest();
             req.Uuid = selectedModel?.Uuid;
             var dto = new UuidRequestDTO(req);
-            Error err = await bridge.OnFetchAssetsSubmit(dto, null);
+            Error err = await bridge.OnFetchResourcesSubmit(dto, null);
 
             if (!Error.IsOK(err))
             {
@@ -429,7 +429,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             [DisplayName("自定义标签")]
             public List<string> Tags { get; set; } = new List<string>();
 
-            public AssetSubEntity[] Assets { get; set; } = new AssetSubEntity[0];
+            public FileSubEntity[] ResourceS { get; set; } = new FileSubEntity[0];
         }
 
 
@@ -523,7 +523,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             {
                 var req = new PrepareUploadRequest();
                 req.Uuid = selectedModel?.Uuid ?? "";
-                req.Filepath = string.Format("_assets/{0}", file.Name);
+                req.Filepath = file.Name;
                 var dto = new PrepareUploadRequestDTO(req);
                 Error err = await bridge.OnPrepareUploadSubmit(dto, null);
                 if (!Error.IsOK(err))
@@ -540,7 +540,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
         {
             var uploadfile = uploadFiles_.Find((_item) =>
             {
-                return _item.browserFile.Name.Equals(_filepath.Remove(0, "_assets/".Length));
+                return _item.browserFile.Name.Equals(_filepath);
             });
             if (null == uploadfile)
                 return;
@@ -571,7 +571,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
             var req = new FlushUploadRequest();
             req.Uuid = uploadfile.bundleUUID;
-            req.Filepath = string.Format("_assets/{0}", uploadfile.browserFile.Name);
+            req.Filepath = uploadfile.browserFile.Name;
             var dto = new FlushUploadRequestDTO(req);
             Error err = await bridge.OnFlushUploadSubmit(dto, null);
             if (!Error.IsOK(err))

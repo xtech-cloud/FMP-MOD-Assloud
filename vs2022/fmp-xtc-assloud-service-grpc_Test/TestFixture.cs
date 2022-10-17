@@ -23,7 +23,7 @@ public class TestFixture : TestFixtureBase
 
     protected override void newContentService()
     {
-        serviceContent_ = new ContentService(new ContentDAO(new DatabaseOptions()), new BundleDAO(new DatabaseOptions()));
+        serviceContent_ = new ContentService(new ContentDAO(new DatabaseOptions()), new BundleDAO(new DatabaseOptions()), new MinIOClient(new MinIOOptions()));
     }
 
     protected override void newDesignerService()

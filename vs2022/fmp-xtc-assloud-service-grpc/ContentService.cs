@@ -10,6 +10,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
     {
         private readonly ContentDAO contentDAO_;
         private readonly BundleDAO bundleDAO_;
+        private readonly MinIOClient minioClient_;
 
         /// <summary>
         /// 构造函数
@@ -18,10 +19,11 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// 支持多个参数，均为自动注入，注入点位于MyProgram.PreBuild
         /// </remarks>
         /// <param name="_contentDAO">自动注入的数据操作对象</param>
-        public ContentService(ContentDAO _contentDAO, BundleDAO _bundleDAO)
+        public ContentService(ContentDAO _contentDAO, BundleDAO _bundleDAO, MinIOClient _minioClient)
         {
             contentDAO_ = _contentDAO;
             bundleDAO_ = _bundleDAO;
+            minioClient_ = _minioClient;
         }
 
         protected override async Task<UuidResponse> safeCreate(ContentCreateRequest _request, ServerCallContext _context)
@@ -70,6 +72,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
 
             content.Name = _request.Name;
+            content.KV.Clear();
             foreach (var pair in _request.Kv)
                 content.KV[pair.Key] = pair.Value;
             content.Alias = _request.Alias;
@@ -78,16 +81,22 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             content.Label = _request.Label;
             content.Topic = _request.Topic;
             content.Description = _request.Description;
+            content.Alias_I18N.Clear();
             foreach (var pair in _request.AliasI18N)
                 content.Alias_I18N[pair.Key] = pair.Value;
+            content.Title_I18N.Clear();
             foreach (var pair in _request.TitleI18N)
                 content.Title_I18N[pair.Key] = pair.Value;
+            content.Caption_I18N.Clear();
             foreach (var pair in _request.CaptionI18N)
                 content.Caption_I18N[pair.Key] = pair.Value;
+            content.Label_I18N.Clear();
             foreach (var pair in _request.LabelI18N)
                 content.Label_I18N[pair.Key] = pair.Value;
+            content.Topic_I18N.Clear();
             foreach (var pair in _request.TopicI18N)
                 content.Topic_I18N[pair.Key] = pair.Value;
+            content.Description_I18N.Clear();
             foreach (var pair in _request.DescriptionI18N)
                 content.Description_I18N[pair.Key] = pair.Value;
 
@@ -197,6 +206,111 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             foreach (var content in result.Value)
             {
                 response.Contents.Add(contentDAO_.ToProtoEntity(content));
+            }
+            return response;
+        }
+
+        protected override async Task<PrepareUploadResponse> safePrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+            ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
+
+            var content = await contentDAO_.GetAsync(_request.Uuid);
+            if (null == content)
+            {
+                return new PrepareUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            string filepath = String.Format("{0}/{1}/{2}", content.Bundle_Name, content.Name, _request.Filepath);
+
+            var response = new PrepareUploadResponse()
+            {
+                Status = new LIB.Proto.Status(),
+            };
+
+            response.Filepath = _request.Filepath;
+            // 有效期1小时
+            response.Url = await minioClient_.PresignedPutObject(filepath, 60 * 60);
+            return response;
+        }
+
+        protected override async Task<FlushUploadResponse> safeFlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+            ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
+
+            var content = await contentDAO_.GetAsync(_request.Uuid);
+            if (null == content)
+            {
+                return new FlushUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            string filepath = String.Format("{0}/{1}/{2}", content.Bundle_Name, content.Name, _request.Filepath);
+            var result = await minioClient_.StateObject(filepath);
+
+            List<FileSubEntity> attachmentsS = new List<FileSubEntity>(content.Attachments);
+            var attachments = attachmentsS.Find((_item) =>
+            {
+                return _item.Path.Equals(_request.Filepath);
+            });
+            if (null == attachments)
+            {
+                attachments = new FileSubEntity();
+                attachmentsS.Add(attachments);
+            }
+
+            //TODO 处理删除掉的附件
+
+            attachments.Path = _request.Filepath;
+            attachments.Hash = result.Key;
+            attachments.Size = result.Value;
+            attachments.Url = "";
+            content.Attachments = attachmentsS.ToArray();
+            await contentDAO_.UpdateAsync(_request.Uuid, content);
+
+            string url = minioClient_.GetAddressUrl(filepath);
+            return new FlushUploadResponse()
+            {
+                Status = new LIB.Proto.Status(),
+                Filepath = _request.Filepath,
+                Hash = result.Key,
+                Size = result.Value,
+                Url = url,
+            };
+        }
+
+        protected override async Task<ContentFetchAttachmentsResponse> safeFetchAttachments(UuidRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+
+            var content = await contentDAO_.GetAsync(_request.Uuid);
+            if (null == content)
+            {
+                return new ContentFetchAttachmentsResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            var response = new ContentFetchAttachmentsResponse()
+            {
+                Status = new LIB.Proto.Status(),
+                Uuid = content.Uuid.ToString(),
+            };
+
+            //TODO 协议的硬编码
+            foreach (var attachment in content.Attachments)
+            {
+                string url = attachment.Url;
+                if (string.IsNullOrEmpty(url))
+                {
+                    string filepath = String.Format("{0}/{1}/{2}", content.Bundle_Name, content.Name, attachment.Path);
+                    url = minioClient_.GetAddressUrl(filepath);
+                }
+                response.Attachments.Add(new LIB.Proto.FileSubEntity
+                {
+                    Path = attachment.Path,
+                    Hash = attachment.Hash,
+                    Size = attachment.Size,
+                    Url = "http://" + url,
+                });
             }
             return response;
         }

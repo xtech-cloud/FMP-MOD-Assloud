@@ -69,9 +69,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             await client_.PutObjectAsync(putObjectArgs);
         }
 
-        public async Task<string> GetAddressUrl(string _path)
+        public string GetAddressUrl(string _path)
         {
-            return await Task.FromResult(Path.Combine(settings_.Value.Address, _path));
+            return string.Format("{0}/{1}/{2}", settings_.Value.Address, settings_.Value.Bucket, _path);
         }
     }
 }

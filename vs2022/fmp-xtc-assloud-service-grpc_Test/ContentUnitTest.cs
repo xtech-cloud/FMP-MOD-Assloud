@@ -226,4 +226,19 @@ public class ContentTest : ContentUnitTestBase
     {
         throw new NotImplementedException();
     }
+
+    public override Task PrepareUploadTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task FlushUploadTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task FetchAttachmentsTest()
+    {
+        throw new NotImplementedException();
+    }
 }
