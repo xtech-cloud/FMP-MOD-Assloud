@@ -6,11 +6,11 @@ namespace XTC.FMP.MOD.Assloud.App.Service
     public class MinIOSettings
     {
         /// <summary>
-        /// 外部的访问协议
+        /// 外部访问的SSL
         /// </summary>
-        public string AddressScheme { get; set; } = null!;
+        public bool AddressSSL{ get; set; } = false;
         /// <summary>
-        /// 外部的访问地址
+        /// 外部访问的地址
         /// </summary>
         public string AddressUrl { get; set; } = null!;
 

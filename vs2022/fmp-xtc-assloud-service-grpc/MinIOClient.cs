@@ -22,6 +22,8 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 .WithEndpoint(settings_.Value.AddressUrl)
                 .WithCredentials(settings_.Value.AccessKey, settings_.Value.SecretKey)
                 .Build();
+            if (_settings.Value.AddressSSL)
+                presignedClient_ = presignedClient_.WithSSL();
         }
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
         public string GetAddressUrl(string _path)
         {
-            return string.Format("{0}://{1}/{2}/{3}", settings_.Value.AddressScheme, settings_.Value.AddressUrl, settings_.Value.Bucket, _path);
+            return string.Format("{0}/{1}/{2}", settings_.Value.AddressUrl, settings_.Value.Bucket, _path);
         }
     }
 }
