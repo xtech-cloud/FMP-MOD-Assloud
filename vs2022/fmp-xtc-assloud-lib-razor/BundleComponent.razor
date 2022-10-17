@@ -168,6 +168,7 @@
 				</FormItem>
 			</TabPane>
 			<TabPane Tab="×ÊÔ´" Key="3">
+				<Input @bind-Value="@uploadPathPrefix_" required/>
 				<InputFile id="fileInput" OnChange="@onUploadFilesClick" hidden multiple />
 				<Upload>
 					<label class="ant-btn" for="fileInput">

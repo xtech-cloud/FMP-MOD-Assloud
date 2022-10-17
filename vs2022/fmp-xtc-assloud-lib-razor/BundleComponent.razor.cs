@@ -129,7 +129,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 var dto = _dto as FlushUploadResponseDTO;
                 var file = razor_.uploadFiles_.Find((_item) =>
                 {
-                    return _item.browserFile.Name.Equals(dto.Value.Filepath);
+                    return string.Format("{0}/{1}", razor_.uploadPathPrefix_, _item.browserFile.Name).Equals(dto.Value.Filepath);
                 });
                 if (null == file)
                     return;
@@ -503,6 +503,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             public string uploadUrl = "";
             public int percentage = 0;
         }
+        private string? uploadPathPrefix_;
 
         private List<UploadFile> uploadFiles_ = new List<UploadFile>();
 
@@ -511,6 +512,9 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             uploadFiles_.Clear();
             if (null == selectedModel)
                 return;
+            if (string.IsNullOrEmpty(uploadPathPrefix_))
+                return;
+
             var bridge = (getFacade()?.getViewBridge() as IBundleViewBridge);
             if (null == bridge)
             {
@@ -523,7 +527,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             {
                 var req = new PrepareUploadRequest();
                 req.Uuid = selectedModel?.Uuid ?? "";
-                req.Filepath = file.Name;
+                req.Filepath = string.Format("{0}/{1}", uploadPathPrefix_, file.Name);
                 var dto = new PrepareUploadRequestDTO(req);
                 Error err = await bridge.OnPrepareUploadSubmit(dto, null);
                 if (!Error.IsOK(err))
@@ -540,7 +544,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
         {
             var uploadfile = uploadFiles_.Find((_item) =>
             {
-                return _item.browserFile.Name.Equals(_filepath);
+                return string.Format("{0}/{1}", uploadPathPrefix_, _item.browserFile.Name).Equals(_filepath);
             });
             if (null == uploadfile)
                 return;
@@ -571,7 +575,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
             var req = new FlushUploadRequest();
             req.Uuid = uploadfile.bundleUUID;
-            req.Filepath = uploadfile.browserFile.Name;
+            req.Filepath = string.Format("{0}/{1}", uploadPathPrefix_, uploadfile.browserFile.Name);
             var dto = new FlushUploadRequestDTO(req);
             Error err = await bridge.OnFlushUploadSubmit(dto, null);
             if (!Error.IsOK(err))
