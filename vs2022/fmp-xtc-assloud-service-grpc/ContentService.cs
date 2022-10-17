@@ -295,7 +295,6 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 Uuid = content.Uuid.ToString(),
             };
 
-            //TODO 协议的硬编码
             foreach (var attachment in content.Attachments)
             {
                 string url = attachment.Url;
@@ -309,7 +308,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                     Path = attachment.Path,
                     Hash = attachment.Hash,
                     Size = attachment.Size,
-                    Url = "http://" + url,
+                    Url = url,
                 });
             }
             return response;

@@ -19,7 +19,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 .WithCredentials(settings_.Value.AccessKey, settings_.Value.SecretKey)
                 .Build();
             presignedClient_ = new MinioClient()
-                .WithEndpoint(settings_.Value.Address)
+                .WithEndpoint(settings_.Value.AddressUrl)
                 .WithCredentials(settings_.Value.AccessKey, settings_.Value.SecretKey)
                 .Build();
         }
@@ -71,7 +71,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
         public string GetAddressUrl(string _path)
         {
-            return string.Format("{0}/{1}/{2}", settings_.Value.Address, settings_.Value.Bucket, _path);
+            return string.Format("{0}://{1}/{2}/{3}", settings_.Value.AddressScheme, settings_.Value.AddressUrl, settings_.Value.Bucket, _path);
         }
     }
 }
