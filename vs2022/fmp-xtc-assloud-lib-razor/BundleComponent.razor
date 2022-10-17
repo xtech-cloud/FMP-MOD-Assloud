@@ -108,7 +108,7 @@
 						</Descriptions>
 					</TabPane>
 					<TabPane Tab="资源" Key="3">
-						<Table TItem="LIB.Proto.FileSubEntity" DataSource="@selectedModel?.ResourceS" HidePagination Style="margin-top:16px;" Context="ut_context">
+						<Table TItem="LIB.Proto.FileSubEntity" DataSource="@selectedModel?.ResourceS" Style="margin-top:16px;" Context="ut_context">
 							<PropertyColumn Property="c=>c.Path" Title="路径"></PropertyColumn>
 							<PropertyColumn Property="c=>Utilities.FormatSize(c.Size)" Title="大小"></PropertyColumn>
 						</Table>
@@ -187,7 +187,7 @@
 						<Progress Percent="@file.percentage" ShowInfo="false" Status="@ProgressStatus.Active"></Progress>
 					}
 				}
-				<Table TItem="LIB.Proto.FileSubEntity" DataSource="@selectedModel?.ResourceS" HidePagination Style="margin-top:16px;" Context="ut_context">
+				<Table TItem="LIB.Proto.FileSubEntity" DataSource="@selectedModel?.ResourceS" Style="margin-top:16px;" Context="ut_context">
 					<PropertyColumn Property="c=>c.Path" Title="路径"></PropertyColumn>
 					<PropertyColumn Property="c=>Utilities.FormatSize(c.Size)" Title="大小"></PropertyColumn>
 				</Table>

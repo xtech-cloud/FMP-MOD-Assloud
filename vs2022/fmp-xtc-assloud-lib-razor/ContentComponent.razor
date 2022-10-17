@@ -244,7 +244,7 @@
 						<Progress Percent="@file.percentage" ShowInfo="false" Status="@ProgressStatus.Active"></Progress>
 					}
 				}
-				<Table TItem="LIB.Proto.FileSubEntity" DataSource="@selectedModel?._attachments" HidePagination Style="margin-top:16px;" Context="ut_context">
+				<Table TItem="LIB.Proto.FileSubEntity" DataSource="@selectedModel?._attachments" Style="margin-top:16px;" Context="ut_context">
 					<PropertyColumn Property="c=>c.Path" Title="Â·¾¶"></PropertyColumn>
 					<PropertyColumn Property="c=>Utilities.FormatSize(c.Size)" Title="´óÐ¡"></PropertyColumn>
 				</Table>
