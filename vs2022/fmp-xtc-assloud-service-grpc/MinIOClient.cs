@@ -73,7 +73,8 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
         public string GetAddressUrl(string _path)
         {
-            return string.Format("{0}/{1}/{2}", settings_.Value.AddressUrl, settings_.Value.Bucket, _path);
+            string scheme = settings_.Value.AddressSSL ? "https" : "http";
+            return string.Format("{0}://{1}/{2}/{3}", scheme, settings_.Value.AddressUrl, settings_.Value.Bucket, _path);
         }
     }
 }
