@@ -221,15 +221,15 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             List<FileSubEntity> resourceS = new List<FileSubEntity>(bundle.resourceS);
             var resource = resourceS.Find((_item) =>
             {
-                return _item.Path.Equals(_request.Filepath);
+                return _item.path.Equals(_request.Filepath);
             });
             if (null == resource)
             {
                 resource = new FileSubEntity();
                 resourceS.Add(resource);
             }
-            resource.Path = _request.Filepath;
-            resource.Hash = result.Key;
+            resource.path = _request.Filepath;
+            resource.hash = result.Key;
             resource.Size = result.Value;
             bundle.resourceS = resourceS.ToArray();
             await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
@@ -263,8 +263,8 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             {
                 response.ResourceS.Add(new LIB.Proto.FileSubEntity
                 {
-                    Path = resource.Path,
-                    Hash = resource.Hash,
+                    Path = resource.path,
+                    Hash = resource.hash,
                     Size = resource.Size,
                 });
             }

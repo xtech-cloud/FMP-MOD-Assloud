@@ -46,7 +46,7 @@ public class IntegrationTest : IntegrationTestBase
         public void RefreshMatch(IDTO _dto, object? _context)
         {
             var dto = _dto as ContentListResponseDTO;
-            Assert.NotEmpty(dto?.Value.Contents);
+            Assert.NotEmpty(dto?.Value.ContentS);
         }
 
         public void RefreshPrepareUpload(IDTO _dto, object? _context)
@@ -92,7 +92,7 @@ public class IntegrationTest : IntegrationTestBase
         {
             SynchronizationContext? context = SynchronizationContext.Current;
             var req = new ContentMatchRequest();
-            req.Patterns.Add("tech.meex.榜样人物/+");
+            req.PatternS.Add("tech.meex.榜样人物/+");
             var dto = new ContentMatchRequestDTO(req);
             await bridgeContent.OnMatchSubmit(dto, context);
         }

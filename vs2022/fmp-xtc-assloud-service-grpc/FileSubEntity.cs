@@ -8,12 +8,12 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// <summary>
         /// 相对路径
         /// </summary>
-        public string Path { get; set; } = "";
+        public string path { get; set; } = "";
 
         /// <summary>
         /// 哈希值
         /// </summary>
-        public string Hash { get; set; } = "";
+        public string hash { get; set; } = "";
 
         /// <summary>
         /// 大小

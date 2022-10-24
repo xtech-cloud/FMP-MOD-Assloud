@@ -151,7 +151,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             {
                 return new ContentRetrieveResponse
                 {
-                    Status = new LIB.Proto.Status() { Code = 1, Message = "Content Not Found" },
+                    Status = new LIB.Proto.Status() { Code = 2, Message = "BundleUUID is null" },
                 };
             }
             var bundle = await singletonServices_.getBundleDAO().GetAsync(bundleUUID.ToString());
@@ -159,7 +159,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             {
                 return new ContentRetrieveResponse
                 {
-                    Status = new LIB.Proto.Status() { Code = 2, Message = "Bundle Not Found" },
+                    Status = new LIB.Proto.Status() { Code = 3, Message = "Bundle Not Found" },
                 };
             }
 
@@ -322,7 +322,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             List<FileSubEntity> attachmentsS = new List<FileSubEntity>(content.AttachmentS);
             var attachments = attachmentsS.Find((_item) =>
             {
-                return _item.Path.Equals(_request.Filepath);
+                return _item.path.Equals(_request.Filepath);
             });
             if (null == attachments)
             {
@@ -332,8 +332,8 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             //TODO 处理删除掉的附件
 
-            attachments.Path = _request.Filepath;
-            attachments.Hash = result.Key;
+            attachments.path = _request.Filepath;
+            attachments.hash = result.Key;
             attachments.Size = result.Value;
             attachments.Url = "";
             content.AttachmentS = attachmentsS.ToArray();
@@ -371,13 +371,13 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 string url = attachment.Url;
                 if (string.IsNullOrEmpty(url))
                 {
-                    string filepath = String.Format("{0}/{1}/{2}", content.foreign_bundle_uuid, content.Uuid, attachment.Path);
+                    string filepath = String.Format("{0}/{1}/{2}", content.foreign_bundle_uuid, content.Uuid, attachment.path);
                     url = singletonServices_.getMinioClient().GetAddressUrl(filepath);
                 }
                 response.AttachmentS.Add(new LIB.Proto.FileSubEntity
                 {
-                    Path = attachment.Path,
-                    Hash = attachment.Hash,
+                    Path = attachment.path,
+                    Hash = attachment.hash,
                     Size = attachment.Size,
                     Url = url,
                 });
