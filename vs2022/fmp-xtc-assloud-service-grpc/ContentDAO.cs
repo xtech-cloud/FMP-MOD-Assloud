@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace XTC.FMP.MOD.Assloud.App.Service
 {
-    public class ContentDAO : DAO<ContentEntity>
+    public class ContentDAO : MongoDAO<ContentEntity>
     {
         public ContentDAO(IMongoDatabase _mongoDatabase) : base(_mongoDatabase, "Content")
         {

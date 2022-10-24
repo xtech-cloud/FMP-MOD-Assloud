@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace XTC.FMP.MOD.Assloud.App.Service
 {
-    public class BundleDAO : DAO<BundleEntity>
+    public class BundleDAO : MongoDAO<BundleEntity>
     {
         public BundleDAO(IMongoDatabase _mongoDatabase) : base(_mongoDatabase, "Bundle")
         {

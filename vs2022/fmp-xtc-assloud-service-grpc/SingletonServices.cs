@@ -3,15 +3,25 @@ using MongoDB.Driver;
 
 namespace XTC.FMP.MOD.Assloud.App.Service
 {
+    /// <summary>
+    /// 单例服务
+    /// </summary>
     public class SingletonServices
     {
         private MongoClient mongoClient_;
         private IMongoDatabase mongoDatabase_;
         private BundleDAO daoBundle_;
         private ContentDAO daoContent_;
-        private AggregateDAO daoAggregate_;
         private MinIOClient clientMinIO_;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <remarks>
+        /// 参数为自动注入，支持多个参数，DatabaseSettings的注入点在Program.cs中，自定义设置可在MyProgram.PreBuild中注入
+        /// </remarks>
+        /// <param name="_databaseSettings"></param>
+        /// <param name="_minioSettings"></param>
         public SingletonServices(IOptions<DatabaseSettings> _databaseSettings, IOptions<MinIOSettings> _minioSettings)
         {
             mongoClient_ = new MongoClient(_databaseSettings.Value.ConnectionString);
@@ -19,7 +29,6 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             daoBundle_ = new BundleDAO(mongoDatabase_);
             daoContent_ = new ContentDAO(mongoDatabase_);
-            daoAggregate_ = new AggregateDAO(mongoDatabase_);
             clientMinIO_ = new MinIOClient(_minioSettings);
         }
 
@@ -31,11 +40,6 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         public ContentDAO getContentDAO()
         {
             return daoContent_;
-        }
-
-        public AggregateDAO getAggregateDAO()
-        {
-            return daoAggregate_;
         }
 
         public MinIOClient getMinioClient()

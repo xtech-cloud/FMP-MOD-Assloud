@@ -18,7 +18,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// <remarks>
         /// 支持多个参数，均为自动注入，注入点位于MyProgram.PreBuild
         /// </remarks>
-        /// <param name="_contentDAO">自动注入的数据操作对象</param>
+        /// <param name="_singletonServices">自动注入的单例服务</param>
         public ContentService(SingletonServices _singletonServices)
         {
             singletonServices_ = _singletonServices;
