@@ -71,6 +71,14 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             await client_.PutObjectAsync(putObjectArgs);
         }
 
+        public async Task RemoveObject(string _path)
+        {
+            RemoveObjectArgs removeObjectArgs = new RemoveObjectArgs()
+                                                        .WithBucket(settings_.Value.Bucket)
+                                                        .WithObject(_path);
+            await client_.RemoveObjectAsync(removeObjectArgs);
+        }
+
         public string GetAddressUrl(string _path)
         {
             string scheme = settings_.Value.AddressSSL ? "https" : "http";

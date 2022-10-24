@@ -6,9 +6,12 @@ using XTC.FMP.MOD.Assloud.App.Service;
 /// </summary>
 public class TestFixture : TestFixtureBase
 {
+    private SingletonServices singletonServices_;
+
     public TestFixture()
         : base()
     {
+        singletonServices_ = new SingletonServices(new DatabaseOptions(), new MinIOOptions());
     }
 
     public override void Dispose()
@@ -18,12 +21,12 @@ public class TestFixture : TestFixtureBase
 
     protected override void newBundleService()
     {
-        serviceBundle_ = new BundleService(new BundleDAO(new DatabaseOptions()), new ContentDAO(new DatabaseOptions()), new MinIOClient(new MinIOOptions()));
+        serviceBundle_ = new BundleService(singletonServices_);
     }
 
     protected override void newContentService()
     {
-        serviceContent_ = new ContentService(new ContentDAO(new DatabaseOptions()), new BundleDAO(new DatabaseOptions()), new MinIOClient(new MinIOOptions()));
+        serviceContent_ = new ContentService(singletonServices_);
     }
 
     protected override void newDesignerService()

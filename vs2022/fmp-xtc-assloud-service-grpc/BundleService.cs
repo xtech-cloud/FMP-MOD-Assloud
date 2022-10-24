@@ -1,6 +1,7 @@
 
 using Google.Rpc;
 using Grpc.Core;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using XTC.FMP.MOD.Assloud.LIB.Proto;
@@ -9,9 +10,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 {
     public class BundleService : BundleServiceBase
     {
-        private readonly BundleDAO bundleDAO_;
-        private readonly ContentDAO contentDAO_;
-        private readonly MinIOClient minioClient_;
+        private readonly SingletonServices singletonServices_;
 
         /// <summary>
         /// 构造函数
@@ -19,21 +18,17 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// <remarks>
         /// 支持多个参数，均为自动注入，注入点位于MyProgram.PreBuild
         /// </remarks>
-        /// <param name="_bundleDAO">自动注入的数据操作对象</param>
-        /// <param name="_contentDAO">自动注入的数据操作对象</param>
-        /// <param name="_minioClient">自动注入的MinIO客户端</param>
-        public BundleService(BundleDAO _bundleDAO, ContentDAO _contentDAO, MinIOClient _minioClient)
+        /// <param name="_singletonServices">自动注入的单例服务</param>
+        public BundleService(SingletonServices _singletonServices)
         {
-            bundleDAO_ = _bundleDAO;
-            contentDAO_ = _contentDAO;
-            minioClient_ = _minioClient;
+            singletonServices_ = _singletonServices;
         }
 
         protected override async Task<UuidResponse> safeCreate(BundleCreateRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Name, "Name");
 
-            var bundle = await bundleDAO_.FindWithNameAsync(_request.Name);
+            var bundle = await singletonServices_.getBundleDAO().FindWithNameAsync(_request.Name);
             if (null != bundle)
             {
                 return new UuidResponse
@@ -45,10 +40,11 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             bundle = new BundleEntity();
             bundle.Uuid = Guid.NewGuid();
-            bundle.Name = _request.Name;
-            bundle.Summary = _request.Summary;
+            bundle.name = _request.Name;
+            bundle.summary = _request.Summary;
 
-            await bundleDAO_.CreateAsync(bundle);
+            await singletonServices_.getBundleDAO().CreateAsync(bundle);
+            await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -61,7 +57,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
             if (null == bundle)
             {
                 return new UuidResponse
@@ -70,21 +66,21 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 };
             }
 
-            bundle.Name = _request.Name;
-            bundle.Summary = _request.Summary;
-            bundle.Labels = new string[_request.Labels.Count];
-            for (int i = 0; i < _request.Labels.Count; ++i)
-                bundle.Labels[i] = _request.Labels[i].ToString();
-            bundle.Tags = new string[_request.Tags.Count];
-            for (int i = 0; i < _request.Tags.Count; ++i)
-                bundle.Tags[i] = _request.Tags[i].ToString();
-            foreach (var pair in _request.SummaryI18N)
-                bundle.Summary_i18n[pair.Key] = pair.Value;
+            bundle.name = _request.Name;
+            bundle.summary = _request.Summary;
+            bundle.labelS = new string[_request.LabelS.Count];
+            for (int i = 0; i < _request.LabelS.Count; ++i)
+                bundle.labelS[i] = _request.LabelS[i].ToString();
+            bundle.tagS = new string[_request.TagS.Count];
+            for (int i = 0; i < _request.TagS.Count; ++i)
+                bundle.tagS[i] = _request.TagS[i].ToString();
+            foreach (var pair in _request.SummaryI18NS)
+                bundle.summary_i18nS[pair.Key] = pair.Value;
 
-            await bundleDAO_.UpdateAsync(_request.Uuid, bundle);
+            await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
 
-            //TODO
-            //await contentDAO_.UpdateBundleName(_request.Uuid, _request.Name);
+            //将meta存入对象存储引擎中
+            await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -97,28 +93,35 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
             if (null == bundle)
             {
                 return new BundleRetrieveResponse
                 {
                     Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" },
                 };
-
             }
 
-            return new BundleRetrieveResponse
+            //TODO use lookup
+            var response = new BundleRetrieveResponse
             {
                 Status = new LIB.Proto.Status() { Code = 0, Message = "" },
-                Bundle = bundleDAO_.ToProtoEntity(bundle)
+                Bundle = singletonServices_.getBundleDAO().ToProtoEntity(bundle)
             };
+            foreach (var contentUuid in bundle.foreign_content_uuidS)
+            {
+                var content = await singletonServices_.getContentDAO().GetAsync(contentUuid.ToString());
+                if (null != content)
+                    response.Bundle.ExterContentNameS[contentUuid.ToString()] = content.name;
+            }
+            return response;
         }
 
         protected override async Task<UuidResponse> safeDelete(UuidRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
             if (null == bundle)
             {
                 return new UuidResponse
@@ -128,7 +131,8 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             }
 
-            await bundleDAO_.RemoveAsync(_request.Uuid);
+            await singletonServices_.getBundleDAO().RemoveAsync(_request.Uuid);
+            await singletonServices_.getBundleDAO().RemoveBucketEntityFromMinIO(bundle, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -146,12 +150,12 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 Status = new LIB.Proto.Status() { Code = 0, Message = "" },
             };
 
-            response.Total = await bundleDAO_.CountAsync();
-            var bundles = await bundleDAO_.ListAsync((int)_request.Offset, (int)_request.Count);
+            response.Total = await singletonServices_.getBundleDAO().CountAsync();
+            var bundles = await singletonServices_.getBundleDAO().ListAsync((int)_request.Offset, (int)_request.Count);
 
             foreach (var bundle in bundles)
             {
-                response.Bundles.Add(bundleDAO_.ToProtoEntity(bundle));
+                response.BundleS.Add(singletonServices_.getBundleDAO().ToProtoEntity(bundle));
             }
             return response;
         }
@@ -165,12 +169,12 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 Status = new LIB.Proto.Status() { Code = 0, Message = "" },
             };
 
-            var result = await bundleDAO_.SearchAsync((int)_request.Offset, (int)_request.Count, _request.Name, _request.Labels.ToArray(), _request.Tags.ToArray());
+            var result = await singletonServices_.getBundleDAO().SearchAsync((int)_request.Offset, (int)_request.Count, _request.Name, _request.LabelS.ToArray(), _request.TagS.ToArray());
 
             response.Total = result.Key;
             foreach (var bundle in result.Value)
             {
-                response.Bundles.Add(bundleDAO_.ToProtoEntity(bundle));
+                response.BundleS.Add(singletonServices_.getBundleDAO().ToProtoEntity(bundle));
             }
             return response;
         }
@@ -180,13 +184,13 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
             ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
 
-            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
             if (null == bundle)
             {
                 return new PrepareUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            string filepath = String.Format("{0}/_resources/{1}", bundle.Name, _request.Filepath);
+            string filepath = String.Format("{0}/_resources/{1}", bundle.Uuid.ToString(), _request.Filepath);
 
             var response = new PrepareUploadResponse()
             {
@@ -195,7 +199,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             response.Filepath = _request.Filepath;
             // 有效期1小时
-            response.Url = await minioClient_.PresignedPutObject(filepath, 60 * 60);
+            response.Url = await singletonServices_.getMinioClient().PresignedPutObject(filepath, 60 * 60);
             return response;
         }
 
@@ -204,17 +208,17 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
             ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
 
-            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
             if (null == bundle)
             {
                 return new FlushUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            string filepath = String.Format("{0}/_resources/{1}", bundle.Name, _request.Filepath);
-            var result = await minioClient_.StateObject(filepath);
-            var url = minioClient_.GetAddressUrl(filepath);
+            string filepath = String.Format("{0}/_resources/{1}", bundle.Uuid.ToString(), _request.Filepath);
+            var result = await singletonServices_.getMinioClient().StateObject(filepath);
+            var url = singletonServices_.getMinioClient().GetAddressUrl(filepath);
 
-            List<FileSubEntity> resourceS = new List<FileSubEntity>(bundle.Resources);
+            List<FileSubEntity> resourceS = new List<FileSubEntity>(bundle.resourceS);
             var resource = resourceS.Find((_item) =>
             {
                 return _item.Path.Equals(_request.Filepath);
@@ -227,8 +231,8 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             resource.Path = _request.Filepath;
             resource.Hash = result.Key;
             resource.Size = result.Value;
-            bundle.Resources = resourceS.ToArray();
-            await bundleDAO_.UpdateAsync(_request.Uuid, bundle);
+            bundle.resourceS = resourceS.ToArray();
+            await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
 
             return new FlushUploadResponse()
             {
@@ -244,7 +248,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var bundle = await bundleDAO_.GetAsync(_request.Uuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
             if (null == bundle)
             {
                 return new BundleFetchResourcesResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
@@ -255,9 +259,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 Status = new LIB.Proto.Status(),
                 Uuid = bundle.Uuid.ToString(),
             };
-            foreach (var resource in bundle.Resources)
+            foreach (var resource in bundle.resourceS)
             {
-                response.Resources.Add(new LIB.Proto.FileSubEntity
+                response.ResourceS.Add(new LIB.Proto.FileSubEntity
                 {
                     Path = resource.Path,
                     Hash = resource.Hash,
@@ -266,5 +270,6 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
             return response;
         }
+
     }
 }

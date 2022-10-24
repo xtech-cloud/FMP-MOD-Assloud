@@ -3,9 +3,13 @@ using XTC.FMP.MOD.Assloud.LIB.Proto;
 
 public class ContentTest : ContentUnitTestBase
 {
+    private string bundleUUID_ = "";
+    private string bundleName = "cloud.xtech.content.test";
+
     public ContentTest(TestFixture _testFixture)
         : base(_testFixture)
     {
+
     }
 
 
@@ -14,7 +18,7 @@ public class ContentTest : ContentUnitTestBase
         string uuid = "";
         {
             var request = new ContentCreateRequest();
-            request.BundleUuid = Guid.NewGuid().ToString();
+            request.BundleUuid = await getBucketUUID();
             request.Name = "cloud.xtech.test.create";
             var response = await fixture_.getServiceContent().Create(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
@@ -37,7 +41,7 @@ public class ContentTest : ContentUnitTestBase
         string uuid = "";
         {
             var request = new ContentCreateRequest();
-            request.BundleUuid = Guid.NewGuid().ToString();
+            request.BundleUuid = await getBucketUUID();
             request.Name = "cloud.xtech.test.update";
             var response = await fixture_.getServiceContent().Create(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
@@ -47,10 +51,10 @@ public class ContentTest : ContentUnitTestBase
             var request = new ContentUpdateRequest();
             request.Uuid = uuid;
             request.Name = "name";
-            request.Tags.Add("tag-1");
-            request.Tags.Add("tag-2");
-            request.Labels.Add("label-1");
-            request.Labels.Add("label-2");
+            request.TagS.Add("tag-1");
+            request.TagS.Add("tag-2");
+            request.LabelS.Add("label-1");
+            request.LabelS.Add("label-2");
             var response = await fixture_.getServiceContent().Update(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
 
@@ -61,8 +65,8 @@ public class ContentTest : ContentUnitTestBase
             Assert.Equal(0, response2.Status.Code);
             Assert.Equal(uuid, response2.Content.Uuid);
             Assert.Equal(request.Name, response2.Content.Name);
-            Assert.Equal(2, response2.Content.Tags.Count);
-            Assert.Equal(2, response2.Content.Labels.Count);
+            Assert.Equal(2, response2.Content.TagS.Count);
+            Assert.Equal(2, response2.Content.LabelS.Count);
 
             // ²»´æÔÚ
             request.Uuid = Guid.NewGuid().ToString();
@@ -82,7 +86,7 @@ public class ContentTest : ContentUnitTestBase
         string uuid = "";
         {
             var request = new ContentCreateRequest();
-            request.BundleUuid = Guid.NewGuid().ToString();
+            request.BundleUuid = await getBucketUUID();
             request.Name = "cloud.xtech.test.retrieve";
             var response = await fixture_.getServiceContent().Create(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
@@ -107,7 +111,7 @@ public class ContentTest : ContentUnitTestBase
         string uuid = "";
         {
             var request = new ContentCreateRequest();
-            request.BundleUuid = Guid.NewGuid().ToString();
+            request.BundleUuid = await getBucketUUID();
             request.Name = "cloud.xtech.test.delete";
             var response = await fixture_.getServiceContent().Create(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
@@ -133,7 +137,7 @@ public class ContentTest : ContentUnitTestBase
             for (int i = 0; i < 10; i++)
             {
                 var request = new ContentCreateRequest();
-                request.BundleUuid = Guid.NewGuid().ToString();
+                request.BundleUuid = await getBucketUUID();
                 request.Name = "cloud.xtech.test.list#" + i.ToString();
                 var response = await fixture_.getServiceContent().Create(request, fixture_.context);
                 uuids.Add(response.Uuid);
@@ -142,18 +146,20 @@ public class ContentTest : ContentUnitTestBase
         }
         {
             var request = new ContentListRequest();
+            request.BundleUuid = await getBucketUUID();
             request.Count = 5;
             var response = await fixture_.getServiceContent().List(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(5, response.Contents.Count);
+            Assert.Equal(5, response.ContentS.Count);
             request.Offset = 8;
             request.Count = 5;
             response = await fixture_.getServiceContent().List(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(2, response.Contents.Count);
-            Assert.Contains("#8", response.Contents[0].Name);
+            Assert.Equal(2, response.ContentS.Count);
+            Assert.Contains("#8", response.ContentS[0].Name);
+            Assert.Equal(bundleName, response.ContentS[0].ExtraBundleName);
         }
         {
             foreach (var uuid in uuids)
@@ -180,8 +186,8 @@ public class ContentTest : ContentUnitTestBase
                 Assert.Equal(0, response.Status.Code);
                 var request2 = new ContentUpdateRequest();
                 request2.Uuid = response.Uuid;
-                request2.Labels.Add("label." + (i % 3 + 1).ToString());
-                request2.Tags.Add("tag." + (i % 3 + 1).ToString());
+                request2.LabelS.Add("label." + (i % 3 + 1).ToString());
+                request2.TagS.Add("tag." + (i % 3 + 1).ToString());
                 var response2 = await fixture_.getServiceContent().Update(request2, fixture_.context);
                 Assert.Equal(0, response2.Status.Code);
             }
@@ -200,15 +206,15 @@ public class ContentTest : ContentUnitTestBase
             response = await fixture_.getServiceContent().Search(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(10, response.Contents.Count);
+            Assert.Equal(10, response.ContentS.Count);
 
             request.Offset = 5;
             request.Count = 2;
             response = await fixture_.getServiceContent().Search(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(2, response.Contents.Count);
-            Assert.Contains("#6", response.Contents[0].Name);
+            Assert.Equal(2, response.ContentS.Count);
+            Assert.Contains("#6", response.ContentS[0].Name);
         }
 
         {
@@ -240,5 +246,16 @@ public class ContentTest : ContentUnitTestBase
     public override Task FetchAttachmentsTest()
     {
         throw new NotImplementedException();
+    }
+
+    private async Task<string> getBucketUUID()
+    {
+        if (!string.IsNullOrEmpty(bundleUUID_))
+            return bundleUUID_;
+        var request = new BundleCreateRequest();
+        request.Name = bundleName;
+        var response = await fixture_.getServiceBundle().Create(request, fixture_.context);
+        bundleUUID_ = response.Uuid;
+        return bundleUUID_;
     }
 }

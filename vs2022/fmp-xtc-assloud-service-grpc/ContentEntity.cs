@@ -5,26 +5,30 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 {
     public class ContentEntity : Entity
     {
-        public string Name { get; set; } = "";
-        public Dictionary<string, string> KV { get; set; } = new Dictionary<string, string>();
-        public string Alias { get; set; } = "";
-        public string Title { get; set; } = "";
-        public string Caption { get; set; } = "";
-        public string Label { get; set; } = "";
-        public string Topic { get; set; } = "";
-        public string Description { get; set; } = "";
-        public Dictionary<string, string> Alias_I18N { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Title_I18N { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Caption_I18N { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Label_I18N { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Topic_I18N { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Description_I18N { get; set; } = new Dictionary<string, string>();
-        public string[] Labels { get; set; } = new string[0];
-        public string[] Tags { get; set; } = new string[0];
+        public string name { get; set; } = "";
+        public Dictionary<string, string> kvS { get; set; } = new Dictionary<string, string>();
+        public string alias { get; set; } = "";
+        public string title { get; set; } = "";
+        public string caption { get; set; } = "";
+        public string label { get; set; } = "";
+        public string topic { get; set; } = "";
+        public string description { get; set; } = "";
+        public Dictionary<string, string> alias_i18nS { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> title_i18nS { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> caption_i18nS { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> label_i18nS { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> topic_i18nS { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> description_i18nS { get; set; } = new Dictionary<string, string>();
+        public string[] labelS { get; set; } = new string[0];
+        public string[] tagS { get; set; } = new string[0];
 
-        public string Bundle_Uuid { get; set; } = "";
-        public string Bundle_Name { get; set; } = "";
+        public Guid? foreign_bundle_uuid { get; set; } = null;
 
-        public FileSubEntity[] Attachments { get; set; } = new FileSubEntity[0];
+        public FileSubEntity[] AttachmentS { get; set; } = new FileSubEntity[0];
+    }
+
+    public class ExtraContentEntity : ContentEntity
+    {
+        public string? extra_bundle_name { get; set; } = null;
     }
 }

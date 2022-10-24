@@ -85,7 +85,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
 
                 razor_.tableTotal = (int)dto.Value.Total;
                 razor_.tableModel.Clear();
-                foreach (var content in dto.Value.Contents)
+                foreach (var content in dto.Value.ContentS)
                 {
                     var item = new TableModel(content);
                     razor_.tableModel.Add(item);
@@ -138,7 +138,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 });
                 if (null == item)
                     return;
-                item._attachments = dto?.Value.Attachments.ToArray() ?? new FileSubEntity[0];
+                item._attachments = dto?.Value.AttachmentS.ToArray() ?? new FileSubEntity[0];
                 razor_.StateHasChanged();
             }
 
@@ -328,12 +328,12 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             {
                 this.entity = _entity;
                 _Labels = "";
-                foreach (var label in _entity.Labels)
+                foreach (var label in _entity.LabelS)
                     _Labels += label + ";";
                 _Tags = "";
-                foreach (var tag in _entity.Tags)
+                foreach (var tag in _entity.TagS)
                     _Tags += tag + ";";
-                foreach (var pair in _entity.Kv)
+                foreach (var pair in _entity.KvS)
                 {
                     _InputKeyValuePair.Add(new InputKeyValuePair()
                     {
@@ -424,12 +424,12 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             {
                 if (string.IsNullOrWhiteSpace(tag))
                     continue;
-                req.Tags.Add(tag);
+                req.TagS.Add(tag);
             }
             //req.Labels = "";
             foreach (var pair in model._InputKeyValuePair)
             {
-                req.Kv.Add(pair.Key, pair.Value);
+                req.KvS.Add(pair.Key, pair.Value);
             }
             var dto = new ContentUpdateRequestDTO(req);
             Error err = await bridge.OnUpdateSubmit(dto, null);
@@ -448,7 +448,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             updateModel._InputKeyValuePair.Add(
                 new UpdateModel.InputKeyValuePair
                 {
-                    Key = String.Format("{0}", updateModel.entity.Kv.Count + 1),
+                    Key = String.Format("{0}", updateModel.entity.KvS.Count + 1),
                     Value = ""
                 }
             );

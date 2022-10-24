@@ -34,7 +34,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         public Error MountDisk(string _dir)
         {
             logger?.Info("ready to mount disk: {0}", _dir);
-            if(mounted_.Contains(_dir))
+            if (mounted_.Contains(_dir))
             {
                 return Error.OK;
             }
@@ -53,11 +53,11 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             contentsMap_ = new Dictionary<string, ContentEntity>();
             foreach (var bundle_dir in Directory.GetDirectories(_dir))
             {
-                string bundle_name = Path.GetFileName(bundle_dir);
+                string bundle_uuid = Path.GetFileName(bundle_dir);
                 foreach (var content_dir in Directory.GetDirectories(bundle_dir))
                 {
-                    string content_name = Path.GetFileName(content_dir);
-                    if (content_name.StartsWith("_"))
+                    string content_uuid = Path.GetFileName(content_dir);
+                    if (content_uuid.StartsWith("_"))
                         continue;
 
                     string meta_file = Path.Combine(content_dir, "meta.json");
@@ -69,8 +69,9 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
                     ContentEntity content = new ContentEntity();
                     //content.Path = _dir;
-                    content.BundleUuid = bundle_name;
-                    content.Name = content_name;
+                    content.ForeignBundleUuid = bundle_uuid;
+                    content.Uuid = content_uuid;
+                    content.Name = content_uuid;
                     try
                     {
                         string json = File.ReadAllText(meta_file);
@@ -103,13 +104,13 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             {
                 foreach (var pair in contentsMap_)
                 {
-                    foreach (var pattern in _request.Patterns)
+                    foreach (var pattern in _request.PatternS)
                     {
                         if (Regex.IsMatch(pair.Key, pattern))
-                            response.Contents.Add(pair.Value);
+                            response.ContentS.Add(pair.Value);
                     }
                 }
-                response.Total = response.Contents.Count;
+                response.Total = response.ContentS.Count;
             }
             else
             {

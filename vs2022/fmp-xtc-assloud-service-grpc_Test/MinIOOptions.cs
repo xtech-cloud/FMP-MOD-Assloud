@@ -10,7 +10,8 @@ public class MinIOOptions : IOptions<MinIOSettings>
         {
             return new MinIOSettings
             {
-                Address = "localhost:9000",
+                AddressSSL = false,
+                AddressUrl = "localhost:9000",
                 Endpoint = "localhost:9000",
                 Bucket = "fmp.assloud",
                 AccessKey = "3KJLIOSFODNN0EXAMPO0",

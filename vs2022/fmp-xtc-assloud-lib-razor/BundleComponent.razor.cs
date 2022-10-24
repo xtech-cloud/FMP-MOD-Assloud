@@ -87,7 +87,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
 
                 razor_.tableTotal = (int)dto.Value.Total;
                 razor_.tableModel.Clear();
-                foreach (var bundle in dto.Value.Bundles)
+                foreach (var bundle in dto.Value.BundleS)
                 {
                     var item = new TableModel
                     {
@@ -148,7 +148,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 });
                 if (null == item)
                     return;
-                item.ResourceS = dto?.Value.Resources.ToArray() ?? new FileSubEntity[0];
+                item.ResourceS = dto?.Value.ResourceS.ToArray() ?? new FileSubEntity[0];
                 razor_.StateHasChanged();
             }
 
@@ -401,7 +401,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             {
                 if (string.IsNullOrWhiteSpace(tag))
                     continue;
-                req.Tags.Add(tag);
+                req.TagS.Add(tag);
             }
             //req.Labels = "";
             var dto = new BundleUpdateRequestDTO(req);

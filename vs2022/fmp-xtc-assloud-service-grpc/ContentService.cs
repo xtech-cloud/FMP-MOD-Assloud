@@ -1,5 +1,7 @@
 using Google.Rpc;
 using Grpc.Core;
+using MongoDB.Bson.Serialization;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using XTC.FMP.MOD.Assloud.LIB.Proto;
@@ -8,9 +10,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 {
     public class ContentService : ContentServiceBase
     {
-        private readonly ContentDAO contentDAO_;
-        private readonly BundleDAO bundleDAO_;
-        private readonly MinIOClient minioClient_;
+        private readonly SingletonServices singletonServices_;
 
         /// <summary>
         /// 构造函数
@@ -19,11 +19,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// 支持多个参数，均为自动注入，注入点位于MyProgram.PreBuild
         /// </remarks>
         /// <param name="_contentDAO">自动注入的数据操作对象</param>
-        public ContentService(ContentDAO _contentDAO, BundleDAO _bundleDAO, MinIOClient _minioClient)
+        public ContentService(SingletonServices _singletonServices)
         {
-            contentDAO_ = _contentDAO;
-            bundleDAO_ = _bundleDAO;
-            minioClient_ = _minioClient;
+            singletonServices_ = _singletonServices;
         }
 
         protected override async Task<UuidResponse> safeCreate(ContentCreateRequest _request, ServerCallContext _context)
@@ -31,9 +29,16 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             ArgumentChecker.CheckRequiredString(_request.BundleUuid, "Bundle_Uuid");
             ArgumentChecker.CheckRequiredString(_request.Name, "Name");
 
-            var bundle = await bundleDAO_.GetAsync(_request.BundleUuid);
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.BundleUuid);
+            if (null == bundle)
+            {
+                return new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = 1, Message = "bundle not found" },
+                };
+            }
 
-            var content = await contentDAO_.FindWithNameAsync(_request.Name);
+            var content = await singletonServices_.getContentDAO().FindWithNameAsync(_request.Name);
             if (null != content)
             {
                 return new UuidResponse
@@ -43,13 +48,24 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 };
             }
 
+            Guid contentGuid = Guid.NewGuid();
             content = new ContentEntity();
-            content.Uuid = Guid.NewGuid();
-            content.Bundle_Uuid = _request.BundleUuid;
-            content.Bundle_Name = bundle?.Name ?? string.Empty;
-            content.Name = _request.Name;
+            content.Uuid = contentGuid;
+            content.foreign_bundle_uuid = Guid.Parse(_request.BundleUuid);
+            content.name = _request.Name;
 
-            await contentDAO_.CreateAsync(content);
+            await singletonServices_.getContentDAO().CreateAsync(content);
+            await singletonServices_.getContentDAO().PutContentEntityToMinIO(content, singletonServices_.getMinioClient());
+
+            // 更新Bundle
+            List<Guid> contentS = new List<Guid>(bundle.foreign_content_uuidS);
+            if (!contentS.Contains(contentGuid))
+            {
+                contentS.Add(contentGuid);
+            }
+            bundle.foreign_content_uuidS = contentS.ToArray();
+            await singletonServices_.getBundleDAO().UpdateAsync(_request.BundleUuid, bundle);
+            await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -62,7 +78,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var content = await contentDAO_.GetAsync(_request.Uuid);
+            var content = await singletonServices_.getContentDAO().GetAsync(_request.Uuid);
             if (null == content)
             {
                 return new UuidResponse
@@ -71,43 +87,44 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 };
             }
 
-            content.Name = _request.Name;
-            content.KV.Clear();
-            foreach (var pair in _request.Kv)
-                content.KV[pair.Key] = pair.Value;
-            content.Alias = _request.Alias;
-            content.Title = _request.Title;
-            content.Caption = _request.Caption;
-            content.Label = _request.Label;
-            content.Topic = _request.Topic;
-            content.Description = _request.Description;
-            content.Alias_I18N.Clear();
-            foreach (var pair in _request.AliasI18N)
-                content.Alias_I18N[pair.Key] = pair.Value;
-            content.Title_I18N.Clear();
-            foreach (var pair in _request.TitleI18N)
-                content.Title_I18N[pair.Key] = pair.Value;
-            content.Caption_I18N.Clear();
-            foreach (var pair in _request.CaptionI18N)
-                content.Caption_I18N[pair.Key] = pair.Value;
-            content.Label_I18N.Clear();
-            foreach (var pair in _request.LabelI18N)
-                content.Label_I18N[pair.Key] = pair.Value;
-            content.Topic_I18N.Clear();
-            foreach (var pair in _request.TopicI18N)
-                content.Topic_I18N[pair.Key] = pair.Value;
-            content.Description_I18N.Clear();
-            foreach (var pair in _request.DescriptionI18N)
-                content.Description_I18N[pair.Key] = pair.Value;
+            content.name = _request.Name;
+            content.kvS.Clear();
+            foreach (var pair in _request.KvS)
+                content.kvS[pair.Key] = pair.Value;
+            content.alias = _request.Alias;
+            content.title = _request.Title;
+            content.caption = _request.Caption;
+            content.label = _request.Label;
+            content.topic = _request.Topic;
+            content.description = _request.Description;
+            content.alias_i18nS.Clear();
+            foreach (var pair in _request.AliasI18NS)
+                content.alias_i18nS[pair.Key] = pair.Value;
+            content.title_i18nS.Clear();
+            foreach (var pair in _request.TitleI18NS)
+                content.title_i18nS[pair.Key] = pair.Value;
+            content.caption_i18nS.Clear();
+            foreach (var pair in _request.CaptionI18NS)
+                content.caption_i18nS[pair.Key] = pair.Value;
+            content.label_i18nS.Clear();
+            foreach (var pair in _request.LabelI18NS)
+                content.label_i18nS[pair.Key] = pair.Value;
+            content.topic_i18nS.Clear();
+            foreach (var pair in _request.TopicI18NS)
+                content.topic_i18nS[pair.Key] = pair.Value;
+            content.description_i18nS.Clear();
+            foreach (var pair in _request.DescriptionI18NS)
+                content.description_i18nS[pair.Key] = pair.Value;
 
-            content.Labels = new string[_request.Labels.Count];
-            for (int i = 0; i < _request.Labels.Count; ++i)
-                content.Labels[i] = _request.Labels[i].ToString();
-            content.Tags = new string[_request.Tags.Count];
-            for (int i = 0; i < _request.Tags.Count; ++i)
-                content.Tags[i] = _request.Tags[i].ToString();
+            content.labelS = new string[_request.LabelS.Count];
+            for (int i = 0; i < _request.LabelS.Count; ++i)
+                content.labelS[i] = _request.LabelS[i].ToString();
+            content.tagS = new string[_request.TagS.Count];
+            for (int i = 0; i < _request.TagS.Count; ++i)
+                content.tagS[i] = _request.TagS[i].ToString();
 
-            await contentDAO_.UpdateAsync(_request.Uuid, content);
+            await singletonServices_.getContentDAO().UpdateAsync(_request.Uuid, content);
+            await singletonServices_.getContentDAO().PutContentEntityToMinIO(content, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -120,37 +137,84 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var content = await contentDAO_.GetAsync(_request.Uuid);
+            var content = await singletonServices_.getContentDAO().GetAsync(_request.Uuid);
             if (null == content)
             {
                 return new ContentRetrieveResponse
                 {
-                    Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" },
+                    Status = new LIB.Proto.Status() { Code = 1, Message = "Content Not Found" },
                 };
             }
 
-            return new ContentRetrieveResponse
+            Guid? bundleUUID = content.foreign_bundle_uuid;
+            if (null == bundleUUID)
+            {
+                return new ContentRetrieveResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = 1, Message = "Content Not Found" },
+                };
+            }
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(bundleUUID.ToString());
+            if (bundle == null)
+            {
+                return new ContentRetrieveResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = 2, Message = "Bundle Not Found" },
+                };
+            }
+
+            var response = new ContentRetrieveResponse
             {
                 Status = new LIB.Proto.Status() { Code = 0, Message = "" },
-                Content = contentDAO_.ToProtoEntity(content),
+                Content = singletonServices_.getContentDAO().ToProtoEntity(content),
             };
+            response.Content.ExtraBundleName = bundle.name;
+            return response;
         }
 
         protected override async Task<UuidResponse> safeDelete(UuidRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var content = await contentDAO_.GetAsync(_request.Uuid);
+            var content = await singletonServices_.getContentDAO().GetAsync(_request.Uuid);
             if (null == content)
             {
                 return new UuidResponse
                 {
-                    Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" },
+                    Status = new LIB.Proto.Status() { Code = 1, Message = "Content Not Found" },
                 };
-
             }
 
-            await contentDAO_.RemoveAsync(_request.Uuid);
+            string? bundleUUID = content.foreign_bundle_uuid?.ToString();
+            if (null == bundleUUID)
+            {
+                return new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = 1, Message = "Uuid is null" },
+                };
+            }
+
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(bundleUUID);
+            if (null == bundle)
+            {
+                return new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = 2, Message = "Bundle Not Found" },
+                };
+            }
+
+            await singletonServices_.getContentDAO().RemoveAsync(_request.Uuid);
+            await singletonServices_.getContentDAO().RemoveContentEntityFromMinIO(content, singletonServices_.getMinioClient());
+
+            List<Guid> contentS = new List<Guid>(bundle.foreign_content_uuidS);
+            Guid contentUuid = Guid.Parse(_request.Uuid);
+            if (contentS.Contains(contentUuid))
+            {
+                contentS.Remove(contentUuid);
+            }
+            bundle.foreign_content_uuidS = contentS.ToArray();
+            await singletonServices_.getBundleDAO().UpdateAsync(contentUuid.ToString(), bundle);
+            await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -170,24 +234,31 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             if (string.IsNullOrEmpty(_request.BundleUuid))
             {
-                response.Total = await contentDAO_.CountAsync();
-                var contents = await contentDAO_.ListAsync((int)_request.Offset, (int)_request.Count);
-                foreach (var content in contents)
-                {
-                    response.Contents.Add(contentDAO_.ToProtoEntity(content));
-                }
+                response.Total = await singletonServices_.getContentDAO().CountAsync();
             }
             else
             {
-                response.Total = await contentDAO_.CountAsync(_request.BundleUuid);
-                var contents = await contentDAO_.ListAsync((int)_request.Offset, (int)_request.Count, _request.BundleUuid);
-                foreach (var content in contents)
+                response.Total = await singletonServices_.getContentDAO().CountAsync(_request.BundleUuid);
+            }
+            using (var cursor = await singletonServices_.getContentDAO().AggregateListAsync((int)_request.Offset, (int)_request.Count, _request.BundleUuid))
+            {
+                while (await cursor.MoveNextAsync())
                 {
-                    response.Contents.Add(contentDAO_.ToProtoEntity(content));
+                    var batch = cursor.Current;
+                    foreach (var content in batch)
+                    {
+                        try
+                        {
+                            var extraEntity = BsonSerializer.Deserialize<ExtraContentEntity>(content);
+                            response.ContentS.Add(singletonServices_.getContentDAO().ExtraToProtoEntity(extraEntity));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
                 }
             }
-
-
             return response;
         }
 
@@ -200,12 +271,12 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 Status = new LIB.Proto.Status() { Code = 0, Message = "" },
             };
 
-            var result = await contentDAO_.SearchAsync((int)_request.Offset, (int)_request.Count, _request.Name, _request.Labels.ToArray(), _request.Tags.ToArray());
+            var result = await singletonServices_.getContentDAO().SearchAsync((int)_request.Offset, (int)_request.Count, _request.Name, _request.LabelS.ToArray(), _request.TagS.ToArray());
 
             response.Total = result.Key;
             foreach (var content in result.Value)
             {
-                response.Contents.Add(contentDAO_.ToProtoEntity(content));
+                response.ContentS.Add(singletonServices_.getContentDAO().ToProtoEntity(content));
             }
             return response;
         }
@@ -215,13 +286,13 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
             ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
 
-            var content = await contentDAO_.GetAsync(_request.Uuid);
+            var content = await singletonServices_.getContentDAO().GetAsync(_request.Uuid);
             if (null == content)
             {
                 return new PrepareUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            string filepath = String.Format("{0}/{1}/{2}", content.Bundle_Name, content.Name, _request.Filepath);
+            string filepath = String.Format("{0}/{1}/{2}", content.foreign_bundle_uuid, content.Uuid, _request.Filepath);
 
             var response = new PrepareUploadResponse()
             {
@@ -230,7 +301,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             response.Filepath = _request.Filepath;
             // 有效期1小时
-            response.Url = await minioClient_.PresignedPutObject(filepath, 60 * 60);
+            response.Url = await singletonServices_.getMinioClient().PresignedPutObject(filepath, 60 * 60);
             return response;
         }
 
@@ -239,16 +310,16 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
             ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
 
-            var content = await contentDAO_.GetAsync(_request.Uuid);
+            var content = await singletonServices_.getContentDAO().GetAsync(_request.Uuid);
             if (null == content)
             {
                 return new FlushUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
             }
 
-            string filepath = String.Format("{0}/{1}/{2}", content.Bundle_Name, content.Name, _request.Filepath);
-            var result = await minioClient_.StateObject(filepath);
+            string filepath = String.Format("{0}/{1}/{2}", content.foreign_bundle_uuid, content.Uuid, _request.Filepath);
+            var result = await singletonServices_.getMinioClient().StateObject(filepath);
 
-            List<FileSubEntity> attachmentsS = new List<FileSubEntity>(content.Attachments);
+            List<FileSubEntity> attachmentsS = new List<FileSubEntity>(content.AttachmentS);
             var attachments = attachmentsS.Find((_item) =>
             {
                 return _item.Path.Equals(_request.Filepath);
@@ -265,10 +336,10 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             attachments.Hash = result.Key;
             attachments.Size = result.Value;
             attachments.Url = "";
-            content.Attachments = attachmentsS.ToArray();
-            await contentDAO_.UpdateAsync(_request.Uuid, content);
+            content.AttachmentS = attachmentsS.ToArray();
+            await singletonServices_.getContentDAO().UpdateAsync(_request.Uuid, content);
 
-            string url = minioClient_.GetAddressUrl(filepath);
+            string url = singletonServices_.getMinioClient().GetAddressUrl(filepath);
             return new FlushUploadResponse()
             {
                 Status = new LIB.Proto.Status(),
@@ -283,7 +354,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
 
-            var content = await contentDAO_.GetAsync(_request.Uuid);
+            var content = await singletonServices_.getContentDAO().GetAsync(_request.Uuid);
             if (null == content)
             {
                 return new ContentFetchAttachmentsResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
@@ -295,15 +366,15 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 Uuid = content.Uuid.ToString(),
             };
 
-            foreach (var attachment in content.Attachments)
+            foreach (var attachment in content.AttachmentS)
             {
                 string url = attachment.Url;
                 if (string.IsNullOrEmpty(url))
                 {
-                    string filepath = String.Format("{0}/{1}/{2}", content.Bundle_Name, content.Name, attachment.Path);
-                    url = minioClient_.GetAddressUrl(filepath);
+                    string filepath = String.Format("{0}/{1}/{2}", content.foreign_bundle_uuid, content.Uuid, attachment.Path);
+                    url = singletonServices_.getMinioClient().GetAddressUrl(filepath);
                 }
-                response.Attachments.Add(new LIB.Proto.FileSubEntity
+                response.AttachmentS.Add(new LIB.Proto.FileSubEntity
                 {
                     Path = attachment.Path,
                     Hash = attachment.Hash,

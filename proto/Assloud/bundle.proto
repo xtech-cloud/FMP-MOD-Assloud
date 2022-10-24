@@ -39,16 +39,16 @@ message BundleUpdateRequest
     string uuid = 1; // 包的uuid
     string name = 2;  // 包的名称（cloud.xtech.xxx.xxx的形式）
     string summary = 3;  // 包的简介
-    repeated string labels = 4; // 预设标签
-    repeated string tags = 5; // 自定义标签
-    map<string, string> summary_i18n = 200; // 简介的多国语言
+    repeated string labelS = 4; // 预设标签
+    repeated string tagS = 5; // 自定义标签
+    map<string, string> summary_i18nS = 200; // 简介的多国语言
 }
 
 message BundleRetrieveResponse
 {
     Status status = 1; // 回复的状态
     BundleEntity bundle = 2; //  包的实体
-    repeated ContentEntity contents = 3; // 内容的实体的列表
+    repeated ContentEntity contentS = 3; // 内容的实体的列表
 }
 
 message BundleListRequest
@@ -61,7 +61,7 @@ message BundleListResponse
 {
     Status status = 1;  // 状态
     int64 total = 2;  // 总数
-    repeated BundleEntity bundles = 3;  // 包的实体列表
+    repeated BundleEntity bundleS = 3;  // 包的实体列表
 }
 
 message BundleSearchRequest
@@ -69,13 +69,13 @@ message BundleSearchRequest
     int64 offset = 1;  // 偏移值
     int64 count = 2;  // 数量
     string name = 3;  // 名称
-    repeated string labels = 4;  // 预设标签
-    repeated string tags = 5;  // 自定义标签
+    repeated string labelS = 4;  // 预设标签
+    repeated string tagS = 5;  // 自定义标签
 }
 
 message BundleFetchResourcesResponse
 {
     Status status = 1;  // 状态
     string uuid = 2; // 包的UUID
-    repeated FileSubEntity resources = 10;  // 资源的列表
+    repeated FileSubEntity resourceS = 10;  // 资源的列表
 }

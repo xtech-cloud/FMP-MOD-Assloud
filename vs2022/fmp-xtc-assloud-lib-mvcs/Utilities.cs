@@ -10,50 +10,49 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             var entity = new ContentEntity();
             entity.Uuid = _entity.Uuid;
             entity.Name = _entity.Name;
-            entity.BundleUuid = _entity.BundleUuid;
-            entity.BundleName = _entity.BundleName;
+            entity.ForeignBundleUuid = _entity.ForeignBundleUuid;
 
             entity.Alias = _entity.Alias;
-            foreach (var pair in _entity.AliasI18N)
+            foreach (var pair in _entity.AliasI18NS)
             {
-                entity.AliasI18N.Add(pair.Key, pair.Value);
+                entity.AliasI18NS.Add(pair.Key, pair.Value);
             }
 
             entity.Title = _entity.Title;
-            foreach (var pair in _entity.TitleI18N)
+            foreach (var pair in _entity.TitleI18NS)
             {
-                entity.TitleI18N.Add(pair.Key, pair.Value);
+                entity.TitleI18NS.Add(pair.Key, pair.Value);
             }
 
             entity.Caption = _entity.Caption;
-            foreach (var pair in _entity.CaptionI18N)
+            foreach (var pair in _entity.CaptionI18NS)
             {
-                entity.CaptionI18N.Add(pair.Key, pair.Value);
+                entity.CaptionI18NS.Add(pair.Key, pair.Value);
             }
 
             entity.Topic = _entity.Topic;
-            foreach (var pair in _entity.TopicI18N)
+            foreach (var pair in _entity.TopicI18NS)
             {
-                entity.TopicI18N.Add(pair.Key, pair.Value);
+                entity.TopicI18NS.Add(pair.Key, pair.Value);
             }
             entity.Label = _entity.Label;
-            foreach (var pair in _entity.LabelI18N)
+            foreach (var pair in _entity.LabelI18NS)
             {
-                entity.LabelI18N.Add(pair.Key, pair.Value);
+                entity.LabelI18NS.Add(pair.Key, pair.Value);
             }
 
             entity.Description = _entity.Description;
-            foreach (var pair in _entity.DescriptionI18N)
+            foreach (var pair in _entity.DescriptionI18NS)
             {
-                entity.DescriptionI18N.Add(pair.Key, pair.Value);
+                entity.DescriptionI18NS.Add(pair.Key, pair.Value);
             }
 
-            foreach (var pair in _entity.Kv)
+            foreach (var pair in _entity.KvS)
             {
-                entity.Kv.Add(pair.Key, pair.Value);
+                entity.KvS.Add(pair.Key, pair.Value);
             }
-            entity.Labels.AddRange(_entity.Labels);
-            entity.Tags.AddRange(_entity.Tags);
+            entity.LabelS.AddRange(_entity.LabelS);
+            entity.TagS.AddRange(_entity.TagS);
 
             return entity;
         }

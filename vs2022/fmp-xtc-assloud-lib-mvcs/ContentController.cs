@@ -30,7 +30,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             {
                 _status.contentMap = new Dictionary<string, ContentEntity>();
 
-                foreach (ContentEntity entity in _response.Contents)
+                foreach (ContentEntity entity in _response.ContentS)
                 {
                     //_status.contentMap[entity.Meta.Uri] = entity;
                 }

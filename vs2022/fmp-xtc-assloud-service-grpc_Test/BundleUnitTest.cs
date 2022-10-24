@@ -47,11 +47,11 @@ public class BundleTest : BundleUnitTestBase
             request.Uuid = uuid;
             request.Name = "name";
             request.Summary = "summary";
-            request.Tags.Add("tag-1");
-            request.Tags.Add("tag-2");
-            request.Labels.Add("label-1");
-            request.Labels.Add("label-2");
-            request.SummaryI18N.Add("en_US", "summary_en_US");
+            request.TagS.Add("tag-1");
+            request.TagS.Add("tag-2");
+            request.LabelS.Add("label-1");
+            request.LabelS.Add("label-2");
+            request.SummaryI18NS.Add("en_US", "summary_en_US");
             var response = await fixture_.getServiceBundle().Update(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
 
@@ -65,7 +65,7 @@ public class BundleTest : BundleUnitTestBase
             Assert.Equal(request.Summary, response2.Bundle.Summary);
             Assert.Equal(2, response2.Bundle.Tags.Count);
             Assert.Equal(2, response2.Bundle.Labels.Count);
-            Assert.Equal("summary_en_US", response2.Bundle.SummaryI18N["en_US"]);
+            Assert.Equal("summary_en_US", response2.Bundle.SummaryI18NS["en_US"]);
 
             // ²»´æÔÚ
             request.Uuid = Guid.NewGuid().ToString();
@@ -146,14 +146,14 @@ public class BundleTest : BundleUnitTestBase
             var response = await fixture_.getServiceBundle().List(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(5, response.Bundles.Count);
+            Assert.Equal(5, response.BundleS.Count);
             request.Offset = 8;
             request.Count = 5;
             response = await fixture_.getServiceBundle().List(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(2, response.Bundles.Count);
-            Assert.Contains("#8", response.Bundles[0].Name);
+            Assert.Equal(2, response.BundleS.Count);
+            Assert.Contains("#8", response.BundleS[0].Name);
         }
         {
             foreach (var uuid in uuids)
@@ -179,8 +179,8 @@ public class BundleTest : BundleUnitTestBase
                 Assert.Equal(0, response.Status.Code);
                 var request2 = new BundleUpdateRequest();
                 request2.Uuid = response.Uuid;
-                request2.Labels.Add("label." + (i % 3 + 1).ToString());
-                request2.Tags.Add("tag." + (i % 3 + 1).ToString());
+                request2.LabelS.Add("label." + (i % 3 + 1).ToString());
+                request2.TagS.Add("tag." + (i % 3 + 1).ToString());
                 var response2 = await fixture_.getServiceBundle().Update(request2, fixture_.context);
                 Assert.Equal(0, response2.Status.Code);
             }
@@ -199,15 +199,15 @@ public class BundleTest : BundleUnitTestBase
             response = await fixture_.getServiceBundle().Search(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(10, response.Bundles.Count);
+            Assert.Equal(10, response.BundleS.Count);
 
             request.Offset = 5;
             request.Count = 2;
             response = await fixture_.getServiceBundle().Search(request, fixture_.context);
             Assert.Equal(0, response.Status.Code);
             Assert.Equal(10, response.Total);
-            Assert.Equal(2, response.Bundles.Count);
-            Assert.Contains("#6", response.Bundles[0].Name);
+            Assert.Equal(2, response.BundleS.Count);
+            Assert.Contains("#6", response.BundleS[0].Name);
         }
 
         {
