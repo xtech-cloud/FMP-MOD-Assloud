@@ -81,6 +81,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             //将meta存入对象存储引擎中
             await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
+            await singletonServices_.getMinioClient().GenerateManifestAsync(_request.Uuid);
 
             return new UuidResponse
             {
@@ -132,7 +133,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
 
             await singletonServices_.getBundleDAO().RemoveAsync(_request.Uuid);
-            await singletonServices_.getBundleDAO().RemoveBucketEntityFromMinIO(bundle, singletonServices_.getMinioClient());
+            await singletonServices_.getBundleDAO().RemoveBundleFromMinIO(bundle, singletonServices_.getMinioClient());
 
             return new UuidResponse
             {
@@ -230,7 +231,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
             resource.path = _request.Filepath;
             resource.hash = result.Key;
-            resource.Size = result.Value;
+            resource.size = result.Value;
             bundle.resourceS = resourceS.ToArray();
             await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
 
@@ -265,7 +266,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 {
                     Path = resource.path,
                     Hash = resource.hash,
-                    Size = resource.Size,
+                    Size = resource.size,
                 });
             }
             return response;

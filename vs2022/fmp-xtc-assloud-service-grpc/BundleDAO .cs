@@ -85,8 +85,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
         }
 
-        public async Task RemoveBucketEntityFromMinIO(BundleEntity _entity, MinIOClient _minioClient)
+        public async Task RemoveBundleFromMinIO(BundleEntity _entity, MinIOClient _minioClient)
         {
+            //TODO remove directory of bundle
             string filepath = String.Format("{0}/meta.json", _entity.Uuid.ToString());
             await _minioClient.RemoveObject(filepath);
         }

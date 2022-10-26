@@ -2,6 +2,8 @@
 using Minio;
 using Minio.DataModel;
 using Minio.Exceptions;
+using Newtonsoft.Json;
+using System.Reactive.Linq;
 
 namespace XTC.FMP.MOD.Assloud.App.Service
 {
@@ -83,6 +85,37 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         {
             string scheme = settings_.Value.AddressSSL ? "https" : "http";
             return string.Format("{0}://{1}/{2}/{3}", scheme, settings_.Value.AddressUrl, settings_.Value.Bucket, _path);
+        }
+
+        public async Task GenerateManifestAsync(string? _path)
+        {
+            if (string.IsNullOrEmpty(_path))
+                return;
+
+            ListObjectsArgs listObjectsArgs = new ListObjectsArgs()
+                .WithBucket(settings_.Value.Bucket)
+                .WithPrefix(_path).WithRecursive(true);
+            var observable = client_.ListObjectsAsync(listObjectsArgs);
+            var items = await observable.ToList();
+            ManifestSchema schema = new ManifestSchema();
+            foreach (var item in items)
+            {
+                if (item.Key.Equals(string.Format("{0}/manifest.json", _path)))
+                    continue;
+                schema.entries.Add(new ManifestSchema.Entry()
+                {
+                    file = item.Key,
+                    hash = item.ETag,
+                    size = item.Size,
+                });
+            }
+            string filepath = String.Format("{0}/manifest.json", _path);
+            //将meta存入对象存储引擎中
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(schema));
+            using (MemoryStream stream = new MemoryStream(bytes))
+            {
+                await PutObject(filepath, stream);
+            }
         }
     }
 }

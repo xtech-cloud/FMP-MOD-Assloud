@@ -18,7 +18,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// <summary>
         /// 大小
         /// </summary>
-        public ulong Size { get; set; } = 0;
+        public ulong size { get; set; } = 0;
 
         /// <summary>
         /// 外部直接访问路径
@@ -27,6 +27,6 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         /// 空值时为直接存储的文件，返回URL给客户端时实时生成
         /// 非空值时为外部存储的文件
         /// </remarks>
-        public string Url{ get; set; } = "";
+        public string url { get; set; } = "";
     }
 }

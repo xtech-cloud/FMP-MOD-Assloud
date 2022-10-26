@@ -66,6 +66,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             bundle.foreign_content_uuidS = contentS.ToArray();
             await singletonServices_.getBundleDAO().UpdateAsync(_request.BundleUuid, bundle);
             await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
+            await singletonServices_.getMinioClient().GenerateManifestAsync(_request.BundleUuid);
 
             return new UuidResponse
             {
@@ -125,6 +126,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             await singletonServices_.getContentDAO().UpdateAsync(_request.Uuid, content);
             await singletonServices_.getContentDAO().PutContentEntityToMinIO(content, singletonServices_.getMinioClient());
+            await singletonServices_.getMinioClient().GenerateManifestAsync(content.foreign_bundle_uuid.ToString());
 
             return new UuidResponse
             {
@@ -215,6 +217,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             bundle.foreign_content_uuidS = contentS.ToArray();
             await singletonServices_.getBundleDAO().UpdateAsync(contentUuid.ToString(), bundle);
             await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
+            await singletonServices_.getMinioClient().GenerateManifestAsync(content.foreign_bundle_uuid.ToString());
 
             return new UuidResponse
             {
@@ -334,10 +337,11 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             attachments.path = _request.Filepath;
             attachments.hash = result.Key;
-            attachments.Size = result.Value;
-            attachments.Url = "";
+            attachments.size = result.Value;
+            attachments.url = "";
             content.AttachmentS = attachmentsS.ToArray();
             await singletonServices_.getContentDAO().UpdateAsync(_request.Uuid, content);
+            await singletonServices_.getMinioClient().GenerateManifestAsync(content.foreign_bundle_uuid.ToString());
 
             string url = singletonServices_.getMinioClient().GetAddressUrl(filepath);
             return new FlushUploadResponse()
@@ -368,7 +372,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
 
             foreach (var attachment in content.AttachmentS)
             {
-                string url = attachment.Url;
+                string url = attachment.url;
                 if (string.IsNullOrEmpty(url))
                 {
                     string filepath = String.Format("{0}/{1}/{2}", content.foreign_bundle_uuid, content.Uuid, attachment.path);
@@ -378,7 +382,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 {
                     Path = attachment.path,
                     Hash = attachment.hash,
-                    Size = attachment.Size,
+                    Size = attachment.size,
                     Url = url,
                 });
             }
