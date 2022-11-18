@@ -45,6 +45,7 @@
 				}
 			</div>
 			<Table TItem="TableModel" DataSource="@tableModel" Total="@tableTotal" PageIndex="tablePageIndex" PageSize="tablePageSize" OnPageIndexChange="onPageIndexChanged" OnRowClick="onTableRowClick">
+				<PropertyColumn Property="c=>c.Uuid"></PropertyColumn>
 				<PropertyColumn Property="c=>c.Name"></PropertyColumn>
 				<PropertyColumn Property="c=>c.Summary"></PropertyColumn>
 				<PropertyColumn Property="c=>c.Labels">
