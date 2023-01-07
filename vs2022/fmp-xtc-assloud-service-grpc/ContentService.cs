@@ -215,9 +215,9 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 contentS.Remove(contentUuid);
             }
             bundle.foreign_content_uuidS = contentS.ToArray();
-            await singletonServices_.getBundleDAO().UpdateAsync(contentUuid.ToString(), bundle);
+            await singletonServices_.getBundleDAO().UpdateAsync(bundleUUID, bundle);
             await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
-            await singletonServices_.getMinioClient().GenerateManifestAsync(content.foreign_bundle_uuid.ToString());
+            await singletonServices_.getMinioClient().GenerateManifestAsync(bundleUUID.ToString());
 
             return new UuidResponse
             {

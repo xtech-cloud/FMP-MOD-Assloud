@@ -152,6 +152,10 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 razor_.StateHasChanged();
             }
 
+            public void RefreshTidy(IDTO _dto, object? _context)
+            {
+            }
+
             private BundleComponent razor_;
         }
 
@@ -216,6 +220,11 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
 
             string uri = string.Format("/xtc/assloud/content?bundle_uuid={0}&bundle_name={1}", bundle.Uuid, bundle.Name);
             navigationMgr_?.NavigateTo(uri);
+        }
+
+        private void onTidyClick()
+        {
+            visibleCreateModal = true;
         }
 
         #region Search
@@ -365,6 +374,36 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             updateModel.Tags = "";
             foreach (var tag in bundle.Tags)
                 updateModel.Tags += tag + ";";
+        }
+
+        private async void onTidyClick(string? _uuid)
+        {
+            if (string.IsNullOrEmpty(_uuid))
+                return;
+
+            var bundle = tableModel.Find((x) =>
+            {
+                if (string.IsNullOrEmpty(x.Uuid))
+                    return false;
+                return x.Uuid.Equals(_uuid);
+            });
+            if (null == bundle)
+                return;
+
+            var bridge = (getFacade()?.getViewBridge() as IBundleViewBridge);
+            if (null == bridge)
+            {
+                logger_?.Error("bridge is null");
+                return;
+            }
+            var req = new UuidRequest();
+            req.Uuid = bundle.Uuid;
+            var dto = new UuidRequestDTO(req);
+            Error err = await bridge.OnTidySubmit(dto, null);
+            if (null != err)
+            {
+                logger_?.Error(err.getMessage());
+            }
         }
 
         private void onUpdateModalOk()

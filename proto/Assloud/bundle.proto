@@ -26,6 +26,8 @@ service Bundle
     rpc FlushUpload(FlushUploadRequest) returns (FlushUploadResponse) {}
     // 获取资源列表
     rpc FetchResources(UuidRequest) returns (BundleFetchResourcesResponse) {}
+    // 整理
+    rpc Tidy(UuidRequest) returns (UuidResponse) {}
 }
 
 message BundleCreateRequest

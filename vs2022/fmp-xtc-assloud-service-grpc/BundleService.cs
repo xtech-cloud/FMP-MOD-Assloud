@@ -1,6 +1,7 @@
 
 using Google.Rpc;
 using Grpc.Core;
+using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
@@ -78,7 +79,6 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 bundle.summary_i18nS[pair.Key] = pair.Value;
 
             await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
-
             //将meta存入对象存储引擎中
             await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
             await singletonServices_.getMinioClient().GenerateManifestAsync(_request.Uuid);
@@ -270,6 +270,55 @@ namespace XTC.FMP.MOD.Assloud.App.Service
                 });
             }
             return response;
+        }
+
+        protected override async Task<UuidResponse> safeTidy(UuidRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
+            if (null == bundle)
+            {
+                return new UuidResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" },
+                };
+
+            }
+
+            var contentUuidS = new List<Guid>();
+            using (var cursor = await singletonServices_.getContentDAO().AggregateListAsync(0, int.MaxValue, _request.Uuid))
+            {
+                while (await cursor.MoveNextAsync())
+                {
+                    var batch = cursor.Current;
+                    foreach (var doc in batch)
+                    {
+                        try
+                        {
+                            var extraEntity = BsonSerializer.Deserialize<ExtraContentEntity>(doc);
+                            var content = singletonServices_.getContentDAO().ExtraToProtoEntity(extraEntity);
+                            contentUuidS.Add(new Guid(content.Uuid));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                }
+            }
+            bundle.foreign_content_uuidS = contentUuidS.ToArray();
+
+            await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
+            //将meta存入对象存储引擎中
+            await singletonServices_.getBundleDAO().PutBucketEntityToMinIO(bundle, singletonServices_.getMinioClient());
+            await singletonServices_.getMinioClient().GenerateManifestAsync(_request.Uuid);
+
+            return new UuidResponse
+            {
+                Status = new LIB.Proto.Status() { Code = 0, Message = "" },
+                Uuid = _request.Uuid,
+            };
         }
 
     }
