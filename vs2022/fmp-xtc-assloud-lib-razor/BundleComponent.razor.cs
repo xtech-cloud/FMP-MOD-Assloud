@@ -533,9 +533,11 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             await listAll();
         }
 
-        private async Task onConfirmDeleteResource(string? _uuid)
+        private async Task onConfirmDeleteResource(string? _uuid, string _filepath)
         {
             if (string.IsNullOrEmpty(_uuid))
+                return;
+            if (string.IsNullOrEmpty(_filepath))
                 return;
 
             var bridge = (getFacade()?.getViewBridge() as IBundleViewBridge);
@@ -544,10 +546,11 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 logger_?.Error("bridge is null");
                 return;
             }
-            var req = new UuidRequest();
+            var req = new DeleteUploadRequest();
             req.Uuid = _uuid;
-            var dto = new UuidRequestDTO(req);
-            Error err = await bridge.OnDeleteSubmit(dto, null);
+            req.Filepath = _filepath;
+            var dto = new DeleteUploadRequestDTO(req);
+            Error err = await bridge.OnDeleteResourceSubmit(dto, null);
             if (!Error.IsOK(err))
             {
                 logger_?.Error(err.getMessage());

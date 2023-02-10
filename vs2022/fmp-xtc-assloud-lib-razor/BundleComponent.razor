@@ -200,7 +200,7 @@
                             {
                                 <SpaceItem>
                                     <Popconfirm Title="确定要删除这个资源吗?"
-                                            OnConfirm="@(()=>onConfirmDeleteResource(context.Uuid))"
+                                            OnConfirm="@(()=>onConfirmDeleteResource(context.Uuid,ut_context.Path))"
                                             OnCancel="onCancelDeleteResource"
                                             OkText="确定"
                                             CancelText="取消">

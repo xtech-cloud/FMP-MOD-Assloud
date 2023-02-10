@@ -324,6 +324,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         protected override async Task<DeleteUploadResponse> safeDeleteResource(DeleteUploadRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+            ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
 
             // 取bundle
             var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
