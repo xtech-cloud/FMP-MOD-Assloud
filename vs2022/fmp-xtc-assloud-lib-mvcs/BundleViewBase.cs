@@ -122,35 +122,35 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         }
 
         /// <summary>
-        /// 刷新PrepareUpload的数据
+        /// 刷新PrepareUploadResource的数据
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">PrepareUploadResponse的数据传输对象</param>
-        public virtual void RefreshProtoPrepareUpload(Error _err, PrepareUploadResponseDTO _dto, object? _context)
+        public virtual void RefreshProtoPrepareUploadResource(Error _err, PrepareUploadResponseDTO _dto, object? _context)
         {
             var bridge = getFacade()?.getUiBridge() as IBundleUiBridge; 
             if (!Error.IsOK(_err))
             {
-                bridge?.Alert(string.Format("errcode_PrepareUpload_{0}", _err.getCode()), _err.getMessage(), _context);
+                bridge?.Alert(string.Format("errcode_PrepareUploadResource_{0}", _err.getCode()), _err.getMessage(), _context);
                 return;
             }
-            bridge?.RefreshPrepareUpload(_dto, _context);
+            bridge?.RefreshPrepareUploadResource(_dto, _context);
         }
 
         /// <summary>
-        /// 刷新FlushUpload的数据
+        /// 刷新FlushUploadResource的数据
         /// </summary>
         /// <param name="_err">错误</param>
         /// <param name="_dto">FlushUploadResponse的数据传输对象</param>
-        public virtual void RefreshProtoFlushUpload(Error _err, FlushUploadResponseDTO _dto, object? _context)
+        public virtual void RefreshProtoFlushUploadResource(Error _err, FlushUploadResponseDTO _dto, object? _context)
         {
             var bridge = getFacade()?.getUiBridge() as IBundleUiBridge; 
             if (!Error.IsOK(_err))
             {
-                bridge?.Alert(string.Format("errcode_FlushUpload_{0}", _err.getCode()), _err.getMessage(), _context);
+                bridge?.Alert(string.Format("errcode_FlushUploadResource_{0}", _err.getCode()), _err.getMessage(), _context);
                 return;
             }
-            bridge?.RefreshFlushUpload(_dto, _context);
+            bridge?.RefreshFlushUploadResource(_dto, _context);
         }
 
         /// <summary>
@@ -167,6 +167,22 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                 return;
             }
             bridge?.RefreshFetchResources(_dto, _context);
+        }
+
+        /// <summary>
+        /// 刷新DeleteResource的数据
+        /// </summary>
+        /// <param name="_err">错误</param>
+        /// <param name="_dto">DeleteUploadResponse的数据传输对象</param>
+        public virtual void RefreshProtoDeleteResource(Error _err, DeleteUploadResponseDTO _dto, object? _context)
+        {
+            var bridge = getFacade()?.getUiBridge() as IBundleUiBridge; 
+            if (!Error.IsOK(_err))
+            {
+                bridge?.Alert(string.Format("errcode_DeleteResource_{0}", _err.getCode()), _err.getMessage(), _context);
+                return;
+            }
+            bridge?.RefreshDeleteResource(_dto, _context);
         }
 
         /// <summary>

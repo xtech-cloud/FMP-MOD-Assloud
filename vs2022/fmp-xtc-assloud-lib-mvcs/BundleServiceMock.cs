@@ -27,11 +27,13 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
         public System.Func<BundleSearchRequest, Task<BundleListResponse>>? CallSearchDelegate { get; set; } = null;
 
-        public System.Func<PrepareUploadRequest, Task<PrepareUploadResponse>>? CallPrepareUploadDelegate { get; set; } = null;
+        public System.Func<PrepareUploadRequest, Task<PrepareUploadResponse>>? CallPrepareUploadResourceDelegate { get; set; } = null;
 
-        public System.Func<FlushUploadRequest, Task<FlushUploadResponse>>? CallFlushUploadDelegate { get; set; } = null;
+        public System.Func<FlushUploadRequest, Task<FlushUploadResponse>>? CallFlushUploadResourceDelegate { get; set; } = null;
 
         public System.Func<UuidRequest, Task<BundleFetchResourcesResponse>>? CallFetchResourcesDelegate { get; set; } = null;
+
+        public System.Func<DeleteUploadRequest, Task<DeleteUploadResponse>>? CallDeleteResourceDelegate { get; set; } = null;
 
         public System.Func<UuidRequest, Task<UuidResponse>>? CallTidyDelegate { get; set; } = null;
 

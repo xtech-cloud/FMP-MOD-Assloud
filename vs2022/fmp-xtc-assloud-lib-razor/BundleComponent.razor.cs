@@ -115,7 +115,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 RefreshList(_dto, _context);
             }
 
-            public void RefreshPrepareUpload(IDTO _dto, object? _context)
+            public void RefreshPrepareUploadResource(IDTO _dto, object? _context)
             {
                 var dto = _dto as PrepareUploadResponseDTO;
                 if (null == dto)
@@ -124,7 +124,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 Task.Run(async () => await razor_.upload(dto.Value.Filepath, dto.Value.Url));
             }
 
-            public void RefreshFlushUpload(IDTO _dto, object? _context)
+            public void RefreshFlushUploadResource(IDTO _dto, object? _context)
             {
                 var dto = _dto as FlushUploadResponseDTO;
                 var file = razor_.uploadFiles_.Find((_item) =>
@@ -153,6 +153,10 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
 
             public void RefreshTidy(IDTO _dto, object? _context)
+            {
+            }
+
+            public void RefreshDeleteResource(IDTO _dto, object? _context)
             {
             }
 
@@ -497,7 +501,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
         }
 
-        private async Task onConfirmDelete(string? _uuid)
+        private async Task onConfirmDeleteBundle(string? _uuid)
         {
             if (string.IsNullOrEmpty(_uuid))
                 return;
@@ -518,7 +522,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             }
         }
 
-        private void onCancelDelete()
+        private void onCancelDeleteBundle()
         {
             //Nothing to do
         }
@@ -527,6 +531,32 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
         {
             tablePageIndex = args.Page;
             await listAll();
+        }
+
+        private async Task onConfirmDeleteResource(string? _uuid)
+        {
+            if (string.IsNullOrEmpty(_uuid))
+                return;
+
+            var bridge = (getFacade()?.getViewBridge() as IBundleViewBridge);
+            if (null == bridge)
+            {
+                logger_?.Error("bridge is null");
+                return;
+            }
+            var req = new UuidRequest();
+            req.Uuid = _uuid;
+            var dto = new UuidRequestDTO(req);
+            Error err = await bridge.OnDeleteSubmit(dto, null);
+            if (!Error.IsOK(err))
+            {
+                logger_?.Error(err.getMessage());
+            }
+        }
+
+        private void onCancelDeleteResource()
+        {
+            //Nothing to do
         }
         #endregion
 
@@ -568,7 +598,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
                 req.Uuid = selectedModel?.Uuid ?? "";
                 req.Filepath = string.Format("{0}/{1}", uploadPathPrefix_, file.Name);
                 var dto = new PrepareUploadRequestDTO(req);
-                Error err = await bridge.OnPrepareUploadSubmit(dto, null);
+                Error err = await bridge.OnPrepareUploadResourceSubmit(dto, null);
                 if (!Error.IsOK(err))
                 {
                     logger_?.Error(err.getMessage());
@@ -616,7 +646,7 @@ namespace XTC.FMP.MOD.Assloud.LIB.Razor
             req.Uuid = uploadfile.bundleUUID;
             req.Filepath = string.Format("{0}/{1}", uploadPathPrefix_, uploadfile.browserFile.Name);
             var dto = new FlushUploadRequestDTO(req);
-            Error err = await bridge.OnFlushUploadSubmit(dto, null);
+            Error err = await bridge.OnFlushUploadResourceSubmit(dto, null);
             if (!Error.IsOK(err))
             {
                 logger_?.Error(err.getMessage());

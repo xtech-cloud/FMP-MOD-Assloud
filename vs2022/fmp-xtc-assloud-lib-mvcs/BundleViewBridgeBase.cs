@@ -114,33 +114,33 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         }
 
         /// <summary>
-        /// 处理PrepareUpload的提交
+        /// 处理PrepareUploadResource的提交
         /// </summary>
         /// <param name="_dto">PrepareUploadRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public virtual async Task<Error> OnPrepareUploadSubmit(IDTO _dto, object? _context)
+        public virtual async Task<Error> OnPrepareUploadResourceSubmit(IDTO _dto, object? _context)
         {
             PrepareUploadRequestDTO? dto = _dto as PrepareUploadRequestDTO;
             if(null == service)
             {
                 return Error.NewNullErr("service is null");
             }
-            return await service.CallPrepareUpload(dto?.Value, _context);
+            return await service.CallPrepareUploadResource(dto?.Value, _context);
         }
 
         /// <summary>
-        /// 处理FlushUpload的提交
+        /// 处理FlushUploadResource的提交
         /// </summary>
         /// <param name="_dto">FlushUploadRequest的数据传输对象</param>
         /// <returns>错误</returns>
-        public virtual async Task<Error> OnFlushUploadSubmit(IDTO _dto, object? _context)
+        public virtual async Task<Error> OnFlushUploadResourceSubmit(IDTO _dto, object? _context)
         {
             FlushUploadRequestDTO? dto = _dto as FlushUploadRequestDTO;
             if(null == service)
             {
                 return Error.NewNullErr("service is null");
             }
-            return await service.CallFlushUpload(dto?.Value, _context);
+            return await service.CallFlushUploadResource(dto?.Value, _context);
         }
 
         /// <summary>
@@ -156,6 +156,21 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                 return Error.NewNullErr("service is null");
             }
             return await service.CallFetchResources(dto?.Value, _context);
+        }
+
+        /// <summary>
+        /// 处理DeleteResource的提交
+        /// </summary>
+        /// <param name="_dto">DeleteUploadRequest的数据传输对象</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> OnDeleteResourceSubmit(IDTO _dto, object? _context)
+        {
+            DeleteUploadRequestDTO? dto = _dto as DeleteUploadRequestDTO;
+            if(null == service)
+            {
+                return Error.NewNullErr("service is null");
+            }
+            return await service.CallDeleteResource(dto?.Value, _context);
         }
 
         /// <summary>

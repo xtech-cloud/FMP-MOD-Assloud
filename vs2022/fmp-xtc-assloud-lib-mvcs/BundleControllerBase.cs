@@ -98,27 +98,27 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         }
 
         /// <summary>
-        /// 更新PrepareUpload的数据
+        /// 更新PrepareUploadResource的数据
         /// </summary>
         /// <param name="_status">直系状态</param>
-        /// <param name="_response">PrepareUpload的回复</param>
-        public virtual void UpdateProtoPrepareUpload(BundleModel.BundleStatus? _status, PrepareUploadResponse _response, object? _context)
+        /// <param name="_response">PrepareUploadResource的回复</param>
+        public virtual void UpdateProtoPrepareUploadResource(BundleModel.BundleStatus? _status, PrepareUploadResponse _response, object? _context)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             PrepareUploadResponseDTO? dto = new PrepareUploadResponseDTO(_response);
-            getView()?.RefreshProtoPrepareUpload(err, dto, _context);
+            getView()?.RefreshProtoPrepareUploadResource(err, dto, _context);
         }
 
         /// <summary>
-        /// 更新FlushUpload的数据
+        /// 更新FlushUploadResource的数据
         /// </summary>
         /// <param name="_status">直系状态</param>
-        /// <param name="_response">FlushUpload的回复</param>
-        public virtual void UpdateProtoFlushUpload(BundleModel.BundleStatus? _status, FlushUploadResponse _response, object? _context)
+        /// <param name="_response">FlushUploadResource的回复</param>
+        public virtual void UpdateProtoFlushUploadResource(BundleModel.BundleStatus? _status, FlushUploadResponse _response, object? _context)
         {
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             FlushUploadResponseDTO? dto = new FlushUploadResponseDTO(_response);
-            getView()?.RefreshProtoFlushUpload(err, dto, _context);
+            getView()?.RefreshProtoFlushUploadResource(err, dto, _context);
         }
 
         /// <summary>
@@ -131,6 +131,18 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             Error err = new Error(_response.Status.Code, _response.Status.Message);
             BundleFetchResourcesResponseDTO? dto = new BundleFetchResourcesResponseDTO(_response);
             getView()?.RefreshProtoFetchResources(err, dto, _context);
+        }
+
+        /// <summary>
+        /// 更新DeleteResource的数据
+        /// </summary>
+        /// <param name="_status">直系状态</param>
+        /// <param name="_response">DeleteResource的回复</param>
+        public virtual void UpdateProtoDeleteResource(BundleModel.BundleStatus? _status, DeleteUploadResponse _response, object? _context)
+        {
+            Error err = new Error(_response.Status.Code, _response.Status.Message);
+            DeleteUploadResponseDTO? dto = new DeleteUploadResponseDTO(_response);
+            getView()?.RefreshProtoDeleteResource(err, dto, _context);
         }
 
         /// <summary>

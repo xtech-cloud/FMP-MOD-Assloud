@@ -149,11 +149,11 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
         }
 
-        public override async Task<PrepareUploadResponse> PrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        public override async Task<PrepareUploadResponse> PrepareUploadResource(PrepareUploadRequest _request, ServerCallContext _context)
         {
             try
             {
-                return await safePrepareUpload(_request, _context);
+                return await safePrepareUploadResource(_request, _context);
             }
             catch (ArgumentRequiredException ex)
             {
@@ -171,11 +171,11 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             }
         }
 
-        public override async Task<FlushUploadResponse> FlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        public override async Task<FlushUploadResponse> FlushUploadResource(FlushUploadRequest _request, ServerCallContext _context)
         {
             try
             {
-                return await safeFlushUpload(_request, _context);
+                return await safeFlushUploadResource(_request, _context);
             }
             catch (ArgumentRequiredException ex)
             {
@@ -209,6 +209,28 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             catch (Exception ex)
             {
                 return await Task.Run(() => new BundleFetchResourcesResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
+                });
+            }
+        }
+
+        public override async Task<DeleteUploadResponse> DeleteResource(DeleteUploadRequest _request, ServerCallContext _context)
+        {
+            try
+            {
+                return await safeDeleteResource(_request, _context);
+            }
+            catch (ArgumentRequiredException ex)
+            {
+                return await Task.Run(() => new DeleteUploadResponse
+                {
+                    Status = new LIB.Proto.Status() { Code = -HttpStatusCode.BadRequest.GetHashCode(), Message = ex.Message },
+                });
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => new DeleteUploadResponse
                 {
                     Status = new LIB.Proto.Status() { Code = -HttpStatusCode.InternalServerError.GetHashCode(), Message = ex.Message },
                 });
@@ -281,14 +303,14 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             });
         }
 
-        protected virtual async Task<PrepareUploadResponse> safePrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        protected virtual async Task<PrepareUploadResponse> safePrepareUploadResource(PrepareUploadRequest _request, ServerCallContext _context)
         {
             return await Task.Run(() => new PrepareUploadResponse {
                     Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
             });
         }
 
-        protected virtual async Task<FlushUploadResponse> safeFlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        protected virtual async Task<FlushUploadResponse> safeFlushUploadResource(FlushUploadRequest _request, ServerCallContext _context)
         {
             return await Task.Run(() => new FlushUploadResponse {
                     Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
@@ -298,6 +320,13 @@ namespace XTC.FMP.MOD.Assloud.App.Service
         protected virtual async Task<BundleFetchResourcesResponse> safeFetchResources(UuidRequest _request, ServerCallContext _context)
         {
             return await Task.Run(() => new BundleFetchResourcesResponse {
+                    Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
+            });
+        }
+
+        protected virtual async Task<DeleteUploadResponse> safeDeleteResource(DeleteUploadRequest _request, ServerCallContext _context)
+        {
+            return await Task.Run(() => new DeleteUploadResponse {
                     Status = new LIB.Proto.Status() { Code = -1, Message = "Not Implemented" },
             });
         }

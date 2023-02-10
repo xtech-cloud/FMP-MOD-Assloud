@@ -361,6 +361,28 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
 
 
 
+    public class DeleteUploadRequestDTO : IDTO
+    {
+        public DeleteUploadRequestDTO(DeleteUploadRequest _value)
+        {
+            Value = _value;    
+        }
+        public readonly DeleteUploadRequest Value;
+    }
+
+
+
+    public class DeleteUploadResponseDTO : IDTO
+    {
+        public DeleteUploadResponseDTO(DeleteUploadResponse _value)
+        {
+            Value = _value;    
+        }
+        public readonly DeleteUploadResponse Value;
+    }
+
+
+
     public class FileSubEntityDTO : IDTO
     {
         public FileSubEntityDTO(FileSubEntity _value)

@@ -78,6 +78,19 @@ message FlushUploadResponse {
     string url  = 5;  // 访问地址
 }
 
+// 删除上传的请求
+message DeleteUploadRequest
+{
+    string uuid = 1;  // bundle或content的uuid
+    string filepath = 2;  // 文件路径
+}
+
+// 完成删除的回复
+message DeleteUploadResponse {
+    Status status = 1;  // 状态
+    string filepath = 2;  // 文件路径
+}
+
 // 文件子实体
 message FileSubEntity
 {

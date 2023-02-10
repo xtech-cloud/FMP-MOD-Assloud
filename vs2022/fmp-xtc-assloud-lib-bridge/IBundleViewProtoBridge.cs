@@ -53,21 +53,27 @@ namespace XTC.FMP.MOD.Assloud.LIB.Bridge
 
 
         /// <summary>
-        /// 处理PrepareUpload的提交
+        /// 处理PrepareUploadResource的提交
         /// </summary>
-        Task<Error> OnPrepareUploadSubmit(IDTO _dto, object? _context);
+        Task<Error> OnPrepareUploadResourceSubmit(IDTO _dto, object? _context);
 
 
         /// <summary>
-        /// 处理FlushUpload的提交
+        /// 处理FlushUploadResource的提交
         /// </summary>
-        Task<Error> OnFlushUploadSubmit(IDTO _dto, object? _context);
+        Task<Error> OnFlushUploadResourceSubmit(IDTO _dto, object? _context);
 
 
         /// <summary>
         /// 处理FetchResources的提交
         /// </summary>
         Task<Error> OnFetchResourcesSubmit(IDTO _dto, object? _context);
+
+
+        /// <summary>
+        /// 处理DeleteResource的提交
+        /// </summary>
+        Task<Error> OnDeleteResourceSubmit(IDTO _dto, object? _context);
 
 
         /// <summary>

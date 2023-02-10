@@ -80,21 +80,21 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         }
 
         /// <summary>
-        /// 更新PrepareUpload的数据
+        /// 更新PrepareUploadResource的数据
         /// </summary>
-        /// <param name="_response">PrepareUpload的回复</param>
-        public virtual void UpdateProtoPrepareUpload(PrepareUploadResponse _response, object? _context)
+        /// <param name="_response">PrepareUploadResource的回复</param>
+        public virtual void UpdateProtoPrepareUploadResource(PrepareUploadResponse _response, object? _context)
         {
-            getController()?.UpdateProtoPrepareUpload(status_ as BundleModel.BundleStatus, _response, _context);
+            getController()?.UpdateProtoPrepareUploadResource(status_ as BundleModel.BundleStatus, _response, _context);
         }
 
         /// <summary>
-        /// 更新FlushUpload的数据
+        /// 更新FlushUploadResource的数据
         /// </summary>
-        /// <param name="_response">FlushUpload的回复</param>
-        public virtual void UpdateProtoFlushUpload(FlushUploadResponse _response, object? _context)
+        /// <param name="_response">FlushUploadResource的回复</param>
+        public virtual void UpdateProtoFlushUploadResource(FlushUploadResponse _response, object? _context)
         {
-            getController()?.UpdateProtoFlushUpload(status_ as BundleModel.BundleStatus, _response, _context);
+            getController()?.UpdateProtoFlushUploadResource(status_ as BundleModel.BundleStatus, _response, _context);
         }
 
         /// <summary>
@@ -104,6 +104,15 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         public virtual void UpdateProtoFetchResources(BundleFetchResourcesResponse _response, object? _context)
         {
             getController()?.UpdateProtoFetchResources(status_ as BundleModel.BundleStatus, _response, _context);
+        }
+
+        /// <summary>
+        /// 更新DeleteResource的数据
+        /// </summary>
+        /// <param name="_response">DeleteResource的回复</param>
+        public virtual void UpdateProtoDeleteResource(DeleteUploadResponse _response, object? _context)
+        {
+            getController()?.UpdateProtoDeleteResource(status_ as BundleModel.BundleStatus, _response, _context);
         }
 
         /// <summary>

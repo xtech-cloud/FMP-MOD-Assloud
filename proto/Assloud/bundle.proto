@@ -20,12 +20,14 @@ service Bundle
     rpc List(BundleListRequest) returns (BundleListResponse) {}
     // 搜索
     rpc Search(BundleSearchRequest) returns (BundleListResponse) {}
-    // 准备上传
-    rpc PrepareUpload(PrepareUploadRequest) returns (PrepareUploadResponse) {}
-    // 完成上传
-    rpc FlushUpload(FlushUploadRequest) returns (FlushUploadResponse) {}
+    // 准备上传资源
+    rpc PrepareUploadResource(PrepareUploadRequest) returns (PrepareUploadResponse) {}
+    // 完成上传资源
+    rpc FlushUploadResource(FlushUploadRequest) returns (FlushUploadResponse) {}
     // 获取资源列表
     rpc FetchResources(UuidRequest) returns (BundleFetchResourcesResponse) {}
+    // 删除资源
+    rpc DeleteResource(DeleteUploadRequest) returns (DeleteUploadResponse) {}
     // 整理
     rpc Tidy(UuidRequest) returns (UuidResponse) {}
 }

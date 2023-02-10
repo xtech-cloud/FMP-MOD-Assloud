@@ -180,7 +180,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             return response;
         }
 
-        protected override async Task<PrepareUploadResponse> safePrepareUpload(PrepareUploadRequest _request, ServerCallContext _context)
+        protected override async Task<PrepareUploadResponse> safePrepareUploadResource(PrepareUploadRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
             ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
@@ -204,7 +204,7 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             return response;
         }
 
-        protected override async Task<FlushUploadResponse> safeFlushUpload(FlushUploadRequest _request, ServerCallContext _context)
+        protected override async Task<FlushUploadResponse> safeFlushUploadResource(FlushUploadRequest _request, ServerCallContext _context)
         {
             ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
             ArgumentChecker.CheckRequiredString(_request.Filepath, "Filepath");
@@ -321,5 +321,37 @@ namespace XTC.FMP.MOD.Assloud.App.Service
             };
         }
 
+        protected override async Task<DeleteUploadResponse> safeDeleteResource(DeleteUploadRequest _request, ServerCallContext _context)
+        {
+            ArgumentChecker.CheckRequiredString(_request.Uuid, "Uuid");
+
+            // 取bundle
+            var bundle = await singletonServices_.getBundleDAO().GetAsync(_request.Uuid);
+            if (null == bundle)
+            {
+                return new DeleteUploadResponse() { Status = new LIB.Proto.Status() { Code = 1, Message = "Not Found" } };
+            }
+
+            string filepath = String.Format("{0}/_resources/{1}", bundle.Uuid.ToString(), _request.Filepath);
+
+            // 删除resource
+            List<FileSubEntity> resourceS = new List<FileSubEntity>(bundle.resourceS);
+            resourceS.RemoveAll((_item) =>
+            {
+                return _item.path.Equals(_request.Filepath);
+            });
+            bundle.resourceS = resourceS.ToArray();
+            // 更新数据
+            await singletonServices_.getBundleDAO().UpdateAsync(_request.Uuid, bundle);
+
+            // 更新minio
+            await singletonServices_.getMinioClient().RemoveObject(filepath);
+
+            return new DeleteUploadResponse()
+            {
+                Status = new LIB.Proto.Status(),
+                Filepath = _request.Filepath,
+            };
+        }
     }
 }

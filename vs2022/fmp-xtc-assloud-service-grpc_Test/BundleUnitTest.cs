@@ -9,7 +9,6 @@ public class BundleTest : BundleUnitTestBase
     {
     }
 
-
     public override async Task CreateTest()
     {
         string uuid = "";
@@ -221,12 +220,12 @@ public class BundleTest : BundleUnitTestBase
         }
     }
 
-    public override Task PrepareUploadTest()
+    public override Task PrepareUploadResourceTest()
     {
         throw new NotImplementedException();
     }
 
-    public override Task FlushUploadTest()
+    public override Task FlushUploadResourceTest()
     {
         throw new NotImplementedException();
     }
@@ -237,6 +236,11 @@ public class BundleTest : BundleUnitTestBase
     }
 
     public override Task TidyTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task DeleteResourceTest()
     {
         throw new NotImplementedException();
     }

@@ -237,23 +237,23 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
         }
 
         /// <summary>
-        /// 调用PrepareUpload
+        /// 调用PrepareUploadResource
         /// </summary>
-        /// <param name="_request">PrepareUpload的请求</param>
+        /// <param name="_request">PrepareUploadResource的请求</param>
         /// <returns>错误</returns>
-        public virtual async Task<Error> CallPrepareUpload(PrepareUploadRequest? _request, object? _context)
+        public virtual async Task<Error> CallPrepareUploadResource(PrepareUploadRequest? _request, object? _context)
         {
-            getLogger()?.Trace("Call PrepareUpload ...");
+            getLogger()?.Trace("Call PrepareUploadResource ...");
             if (null == _request)
             {
                 return Error.NewNullErr("parameter:_request is null");
             }
 
             PrepareUploadResponse? response = null;
-            if (null != mock.CallPrepareUploadDelegate)
+            if (null != mock.CallPrepareUploadResourceDelegate)
             {
                 getLogger()?.Trace("use mock ...");
-                response = await mock.CallPrepareUploadDelegate(_request);
+                response = await mock.CallPrepareUploadResourceDelegate(_request);
             }
             else
             {
@@ -262,31 +262,31 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                 {
                     return await Task.FromResult(Error.NewNullErr("client is null"));
                 }
-                response = await client.PrepareUploadAsync(_request);
+                response = await client.PrepareUploadResourceAsync(_request);
             }
 
-            getModel()?.UpdateProtoPrepareUpload(response, _context);
+            getModel()?.UpdateProtoPrepareUploadResource(response, _context);
             return Error.OK;
         }
 
         /// <summary>
-        /// 调用FlushUpload
+        /// 调用FlushUploadResource
         /// </summary>
-        /// <param name="_request">FlushUpload的请求</param>
+        /// <param name="_request">FlushUploadResource的请求</param>
         /// <returns>错误</returns>
-        public virtual async Task<Error> CallFlushUpload(FlushUploadRequest? _request, object? _context)
+        public virtual async Task<Error> CallFlushUploadResource(FlushUploadRequest? _request, object? _context)
         {
-            getLogger()?.Trace("Call FlushUpload ...");
+            getLogger()?.Trace("Call FlushUploadResource ...");
             if (null == _request)
             {
                 return Error.NewNullErr("parameter:_request is null");
             }
 
             FlushUploadResponse? response = null;
-            if (null != mock.CallFlushUploadDelegate)
+            if (null != mock.CallFlushUploadResourceDelegate)
             {
                 getLogger()?.Trace("use mock ...");
-                response = await mock.CallFlushUploadDelegate(_request);
+                response = await mock.CallFlushUploadResourceDelegate(_request);
             }
             else
             {
@@ -295,10 +295,10 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
                 {
                     return await Task.FromResult(Error.NewNullErr("client is null"));
                 }
-                response = await client.FlushUploadAsync(_request);
+                response = await client.FlushUploadResourceAsync(_request);
             }
 
-            getModel()?.UpdateProtoFlushUpload(response, _context);
+            getModel()?.UpdateProtoFlushUploadResource(response, _context);
             return Error.OK;
         }
 
@@ -332,6 +332,39 @@ namespace XTC.FMP.MOD.Assloud.LIB.MVCS
             }
 
             getModel()?.UpdateProtoFetchResources(response, _context);
+            return Error.OK;
+        }
+
+        /// <summary>
+        /// 调用DeleteResource
+        /// </summary>
+        /// <param name="_request">DeleteResource的请求</param>
+        /// <returns>错误</returns>
+        public virtual async Task<Error> CallDeleteResource(DeleteUploadRequest? _request, object? _context)
+        {
+            getLogger()?.Trace("Call DeleteResource ...");
+            if (null == _request)
+            {
+                return Error.NewNullErr("parameter:_request is null");
+            }
+
+            DeleteUploadResponse? response = null;
+            if (null != mock.CallDeleteResourceDelegate)
+            {
+                getLogger()?.Trace("use mock ...");
+                response = await mock.CallDeleteResourceDelegate(_request);
+            }
+            else
+            {
+                var client = getGrpcClient();
+                if (null == client)
+                {
+                    return await Task.FromResult(Error.NewNullErr("client is null"));
+                }
+                response = await client.DeleteResourceAsync(_request);
+            }
+
+            getModel()?.UpdateProtoDeleteResource(response, _context);
             return Error.OK;
         }
 
